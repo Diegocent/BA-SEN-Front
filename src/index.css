@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Definiendo variables CSS personalizadas para los colores */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 25 100% 50%; /* #FF8100 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 40 5% 91%; /* #EAE9E8 */
+    --secondary-foreground: 0 0% 10%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 42%;
+    --accent: 0 0% 95%;
+    --accent-foreground: 0 0% 10%;
+    --destructive: 0 100% 50%; /* #FF2300 */
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 25 100% 50%;
+    --radius: 0.5rem;
+
+    /* Colores personalizados */
+    --warning: 45 100% 50%; /* #FFB300 */
+    --warning-foreground: 0 0% 10%;
+    --info: 230 97% 47%; /* #0433F1 */
+    --info-foreground: 0 0% 100%;
+    --danger: 0 100% 50%; /* #FF2300 */
+    --danger-foreground: 0 0% 100%;
+    --success: 130 100% 48%; /* #00F44A */
+    --success-foreground: 0 0% 10%;
+
+    /* Agregando variables específicas para el sidebar */
+    --sidebar: 0 0% 98%;
+    --sidebar-foreground: 0 0% 10%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-accent: 0 0% 94%;
+  }
+
+  .dark {
+    --background: 0 0% 4%;
+    --foreground: 0 0% 95%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 25 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 40 5% 15%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 95%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 25 100% 50%;
+
+    /* Variables del sidebar para modo oscuro */
+    --sidebar: 0 0% 6%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-accent: 0 0% 10%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Estilos personalizados para animaciones del sidebar */
+@layer components {
+  .sidebar-transition {
+    transition: width 0.3s ease-in-out;
+  }
+}
