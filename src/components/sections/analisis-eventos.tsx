@@ -8,8 +8,94 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { DataTable } from "../data-table";
 
 export function AnalisisEventos() {
+  const resumenTipoEventos = [
+    {
+      tipoEvento: "Inundaciones",
+      numeroOcurrencias: 145,
+      kit_sentencia: 40,
+      kit_evento: 120,
+      chapas: 300,
+    },
+    {
+      tipoEvento: "Sequías",
+      numeroOcurrencias: 89,
+      kit_sentencia: 25,
+      kit_evento: 80,
+      chapas: 150,
+    },
+    {
+      tipoEvento: "Incendios",
+      numeroOcurrencias: 67,
+      kit_sentencia: 18,
+      kit_evento: 60,
+      chapas: 90,
+    },
+    {
+      tipoEvento: "Tormentas Severas",
+      numeroOcurrencias: 45,
+      kit_sentencia: 10,
+      kit_evento: 35,
+      chapas: 60,
+    },
+  ];
+
+  const eventosPorDepartamento = [
+    {
+      departamento: "Central",
+      evento: "Inundación",
+      kit_sentencia: 12,
+      kit_evento: 30,
+      chapas: 60,
+    },
+    {
+      departamento: "Alto Paraná",
+      evento: "Sequía",
+      kit_sentencia: 8,
+      kit_evento: 22,
+      chapas: 35,
+    },
+    {
+      departamento: "Itapúa",
+      evento: "Incendio",
+      kit_sentencia: 5,
+      kit_evento: 15,
+      chapas: 20,
+    },
+    {
+      departamento: "Caaguazú",
+      evento: "Tormenta",
+      kit_sentencia: 4,
+      kit_evento: 10,
+      chapas: 12,
+    },
+    {
+      departamento: "San Pedro",
+      evento: "Granizada",
+      kit_sentencia: 3,
+      kit_evento: 8,
+      chapas: 10,
+    },
+  ];
+
+  const columnasTipoEventos = [
+    { key: "tipoEvento", label: "Tipo de evento" },
+    { key: "numeroOcurrencias", label: "Numero de Ocurrencias" },
+    { key: "kit_sentencia", label: "Kit sentencia" },
+    { key: "kit_evento", label: "Kit por eventos adversos" },
+    { key: "chapas", label: "Chapas" },
+  ];
+
+  const columnasEventosDepartamento = [
+    { key: "departamento", label: "Departamento" },
+    { key: "evento", label: "Evento" },
+    { key: "kit_sentencia", label: "Kits sentencia" },
+    { key: "kit_evento", label: "Kits por eventos adversos" },
+    { key: "chapas", label: "Chapas" },
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -132,6 +218,50 @@ export function AnalisisEventos() {
             </CardContent>
           </Card>
         </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-primary">
+              Resumen por Tipo de Eventos
+            </CardTitle>
+            <CardDescription>
+              Datos consolidados de asistencia humanitaria por tipo de evento
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DataTable
+              data={resumenTipoEventos}
+              columns={columnasTipoEventos}
+              searchPlaceHolder="Buscar tipo de evento..."
+              title={""}
+              onViewDetails={function (item: any): React.ReactNode {
+                throw new Error("Function not implemented.");
+              }}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-info">
+              Eventos por Departamento
+            </CardTitle>
+            <CardDescription>
+              Distribución de eventos de emergencia por departamento
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DataTable
+              data={eventosPorDepartamento}
+              columns={columnasEventosDepartamento}
+              searchPlaceHolder="Buscar departamento..."
+              title={""}
+              onViewDetails={function (item: any): React.ReactNode {
+                throw new Error("Function not implemented.");
+              }}
+            />
+          </CardContent>
+        </Card>
       </motion.div>
     </motion.div>
   );

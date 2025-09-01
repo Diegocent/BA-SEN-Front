@@ -1,15 +1,130 @@
-"use client";
-
 import { motion } from "framer-motion";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Database, Users, MapPin } from "lucide-react";
+import { MapaParaguay } from "../mapa-paraguay";
+import { DataTable } from "../data-table";
+
+const registrosRecientes = [
+  {
+    fecha: "2024-01-15",
+    localidad: "Asunción",
+    distrito: "Asunción",
+    departamento: "Central",
+    evento: "Inundación",
+    kit_sentencia: 10,
+    kit_evento: 20,
+    chapas: 50,
+  },
+  {
+    fecha: "2024-01-14",
+    localidad: "Ciudad del Este",
+    distrito: "Ciudad del Este",
+    departamento: "Alto Paraná",
+    evento: "Incendio",
+    kit_sentencia: 5,
+    kit_evento: 15,
+    chapas: 30,
+  },
+  {
+    fecha: "2024-01-13",
+    localidad: "Encarnación",
+    distrito: "Encarnación",
+    departamento: "Itapúa",
+    evento: "Temporal",
+    kit_sentencia: 8,
+    kit_evento: 12,
+    chapas: 25,
+  },
+  {
+    fecha: "2024-01-12",
+    localidad: "Coronel Oviedo",
+    distrito: "Coronel Oviedo",
+    departamento: "Caaguazú",
+    evento: "Granizada",
+    kit_sentencia: 3,
+    kit_evento: 10,
+    chapas: 18,
+  },
+  {
+    fecha: "2024-01-11",
+    localidad: "Paraguarí",
+    distrito: "Paraguarí",
+    departamento: "Paraguarí",
+    evento: "Viento fuerte",
+    kit_sentencia: 2,
+    kit_evento: 7,
+    chapas: 12,
+  },
+];
+
+const columnasRegistros = [
+  { key: "fecha", label: "Fecha" },
+  { key: "localidad", label: "Localidad" },
+  { key: "distrito", label: "Distrito" },
+  { key: "departamento", label: "Departamento" },
+  { key: "evento", label: "Evento" },
+  { key: "kit_sentencia", label: "Kit de sentencia de la Corte" },
+  { key: "kit_evento", label: "Kit de asistencia por evento adverso" },
+  { key: "chapas", label: "Chapas" },
+];
 
 export function ResumenGeneral() {
+  const renderDetallesRegistro = (registro: any) => (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <h4 className="font-semibold text-primary">Información General</h4>
+          <div className="mt-2 space-y-2">
+            <p>
+              <span className="font-medium">ID:</span> {registro.id}
+            </p>
+            <p>
+              <span className="font-medium">Fecha:</span> {registro.fecha}
+            </p>
+            <p>
+              <span className="font-medium">Estado:</span> {registro.estado}
+            </p>
+            <p>
+              <span className="font-medium">Responsable:</span>{" "}
+              {registro.responsable}
+            </p>
+          </div>
+        </div>
+        <div>
+          <h4 className="font-semibold text-primary">Ubicación y Ayuda</h4>
+          <div className="mt-2 space-y-2">
+            <p>
+              <span className="font-medium">Departamento:</span>{" "}
+              {registro.departamento}
+            </p>
+            <p>
+              <span className="font-medium">Distrito:</span> {registro.distrito}
+            </p>
+            <p>
+              <span className="font-medium">Tipo de Ayuda:</span>{" "}
+              {registro.tipoAyuda}
+            </p>
+            <p>
+              <span className="font-medium">Beneficiarios:</span>{" "}
+              {registro.beneficiarios}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h4 className="font-semibold text-primary">Detalles Adicionales</h4>
+        <div className="mt-2 p-4 bg-muted rounded-lg">
+          <p className="text-sm">
+            Registro de asistencia humanitaria realizado en {registro.distrito},{" "}
+            {registro.departamento}. Se entregaron {registro.tipoAyuda} a{" "}
+            {registro.beneficiarios} beneficiarios bajo la supervisión de{" "}
+            {registro.responsable}.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -35,53 +150,105 @@ export function ResumenGeneral() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="grid gap-6"
+        className="grid gap-6 max-w-screen overflow-x-auto"
+        style={{ maxWidth: "100vw" }}
       >
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-primary">
-              Estadísticas Generales
-            </CardTitle>
-            <CardDescription>
-              Resumen de los principales indicadores
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-foreground">
-              Aquí se mostrará el resumen general de todos los datos de
-              asistencia humanitaria de la SEN Paraguay. Incluirá métricas
-              clave, totales de beneficiarios, y estadísticas principales.
-            </p>
-          </CardContent>
-        </Card>
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Total de datos registrados */}
+          <motion.div
+            whileHover={{ y: -3, boxShadow: "0 2px 8px 0 rgba(0,0,0,0.08)" }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <Card className="bg-white border-2 border-primary-dark text-primary-dark">
+              <CardHeader className="flex flex-row items-center gap-3">
+                <Database className="h-8 w-8 text-primary-dark" />
+                <CardTitle className="text-primary-dark">
+                  Total de datos registrados
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold text-primary-dark">
+                  {registrosRecientes.length}
+                </p>
+                <p className="text-sm text-primary-dark/80">
+                  En el rango seleccionado
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-info">
-                Total de Beneficiarios
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold text-info">0</p>
-              <p className="text-sm text-muted-foreground">
-                Personas asistidas
-              </p>
-            </CardContent>
-          </Card>
+          {/* Total de familias asistidas */}
+          <motion.div
+            whileHover={{ y: -3, boxShadow: "0 2px 8px 0 rgba(0,0,0,0.08)" }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <Card className="bg-white border-2 border-primary-dark text-primary-dark">
+              <CardHeader className="flex flex-row items-center gap-3">
+                <Users className="h-8 w-8 text-primary-dark" />
+                <CardTitle className="text-primary-dark">
+                  Total de familias asistidas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold text-primary-dark">
+                  {registrosRecientes.reduce(
+                    (acc, r) =>
+                      acc +
+                      (typeof r.kit_evento === "number" ? r.kit_evento : 0),
+                    0
+                  )}
+                </p>
+                <p className="text-sm text-primary-dark/80">
+                  Familias beneficiadas
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-success">Eventos Atendidos</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold text-success">0</p>
-              <p className="text-sm text-muted-foreground">
-                Emergencias gestionadas
-              </p>
-            </CardContent>
-          </Card>
+          {/* Total de departamentos asistidos */}
+          <motion.div
+            whileHover={{ y: -3, boxShadow: "0 2px 8px 0 rgba(0,0,0,0.08)" }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <Card className="bg-white border-2 border-primary-dark text-primary-dark">
+              <CardHeader className="flex flex-row items-center gap-3">
+                <MapPin className="h-8 w-8 text-primary-dark" />
+                <CardTitle className="text-primary-dark">
+                  Total de departamentos asistidos
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold text-primary-dark">
+                  {
+                    Array.from(
+                      new Set(registrosRecientes.map((r) => r.departamento))
+                    ).length
+                  }
+                </p>
+                <p className="text-sm text-primary-dark/80">
+                  Departamentos únicos
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
+        <MapaParaguay />
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <div className="overflow-x-auto w-full">
+            <DataTable
+              title="Registros Recientes"
+              data={registrosRecientes}
+              columns={columnasRegistros}
+              onViewDetails={renderDetallesRegistro}
+              itemsPerPage={5}
+            />
+          </div>
+        </motion.div>
       </motion.div>
     </motion.div>
   );

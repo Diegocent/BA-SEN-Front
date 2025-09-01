@@ -25,12 +25,36 @@ module.exports = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#FF8100",
+          DEFAULT: "var(--primary)",
+          light: "var(--primary-light)",
+          dark: "var(--primary-dark)",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "#EAE9E8",
+          DEFAULT: "var(--secondary)",
+          light: "var(--secondary-light)",
+          dark: "var(--secondary-dark)",
           foreground: "hsl(var(--secondary-foreground))",
+        },
+        warning: {
+          DEFAULT: "var(--warning)",
+          light: "var(--warning-light)",
+          dark: "var(--warning-dark)",
+        },
+        info: {
+          DEFAULT: "var(--info)",
+          light: "var(--info-light)",
+          dark: "var(--info-dark)",
+        },
+        danger: {
+          DEFAULT: "var(--danger)",
+          light: "var(--danger-light)",
+          dark: "var(--danger-dark)",
+        },
+        success: {
+          DEFAULT: "var(--success)",
+          light: "var(--success-light)",
+          dark: "var(--success-dark)",
         },
         destructive: {
           DEFAULT: "#FF2300",
@@ -52,10 +76,6 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        warning: "#FFB300",
-        info: "#0433F1",
-        danger: "#FF2300",
-        success: "#00F44A",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar))",
           foreground: "hsl(var(--sidebar-foreground))",

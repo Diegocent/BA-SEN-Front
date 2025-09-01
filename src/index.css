@@ -4,39 +4,43 @@
 
 @layer base {
   :root {
-    /* Definiendo variables CSS personalizadas para los colores */
+    --primary: #ffac58;
+    --primary-light: #ffcd9a;
+    --primary-dark: #ff8100;
+    --secondary: #eae9e8;
+    --secondary-light: #f8f8f8;
+    --secondary-dark: #d5d4d3;
+    --warning: #ffb300;
+    --warning-light: #ffd166;
+    --warning-dark: #e6a100;
+    --info: #0433f1;
+    --info-light: #3564f4;
+    --info-dark: #0329c1;
+    --danger: #ff2300;
+    --danger-light: #ff5c33;
+    --danger-dark: #cc1c00;
+    --success: #00f44a;
+    --success-light: #33f46e;
+    --success-dark: #00c23b;
+    /* Variables existentes */
     --background: 0 0% 100%;
     --foreground: 0 0% 10%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 10%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 10%;
-    --primary: 25 100% 50%; /* #FF8100 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 40 5% 91%; /* #EAE9E8 */
     --secondary-foreground: 0 0% 10%;
     --muted: 0 0% 96%;
     --muted-foreground: 0 0% 42%;
     --accent: 0 0% 95%;
     --accent-foreground: 0 0% 10%;
-    --destructive: 0 100% 50%; /* #FF2300 */
+    --destructive: 0 100% 50%;
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 90%;
     --input: 0 0% 90%;
     --ring: 25 100% 50%;
     --radius: 0.5rem;
-
-    /* Colores personalizados */
-    --warning: 45 100% 50%; /* #FFB300 */
-    --warning-foreground: 0 0% 10%;
-    --info: 230 97% 47%; /* #0433F1 */
-    --info-foreground: 0 0% 100%;
-    --danger: 0 100% 50%; /* #FF2300 */
-    --danger-foreground: 0 0% 100%;
-    --success: 130 100% 48%; /* #00F44A */
-    --success-foreground: 0 0% 10%;
-
-    /* Agregando variables específicas para el sidebar */
     --sidebar: 0 0% 98%;
     --sidebar-foreground: 0 0% 10%;
     --sidebar-border: 0 0% 90%;
