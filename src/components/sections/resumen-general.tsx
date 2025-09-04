@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Database, Users, MapPin } from "lucide-react";
 import { MapaParaguay } from "../mapa-paraguay";
 import { DataTable } from "../data-table";
+import { useResumenGeneralQuery } from "../../api";
+import { useEffect, useState } from "react";
 
 const registrosRecientes = [
   {
@@ -68,7 +70,36 @@ const columnasRegistros = [
   { key: "chapas", label: "Chapas" },
 ];
 
+type ResumenGeneralData = {
+  cantidad_departamentos: number;
+  cantidad_kit_evento: number;
+  cantidad_registros_total: number;
+};
+
 export function ResumenGeneral() {
+  // Hook de RTK Query para el endpoint resumen-general
+  const { data, error, isLoading } = useResumenGeneralQuery({}) as {
+    data: ResumenGeneralData | undefined;
+    error: any;
+    isLoading: boolean;
+  };
+  const [cardsResumen, setCardsResumen] = useState<ResumenGeneralData>({
+    cantidad_departamentos: 0,
+    cantidad_kit_evento: 0,
+    cantidad_registros_total: 0,
+  });
+
+  useEffect(() => {
+    if (data) {
+      setCardsResumen({
+        cantidad_departamentos: data.cantidad_departamentos,
+        cantidad_kit_evento: data.cantidad_kit_evento,
+        cantidad_registros_total: data.cantidad_registros_total,
+      });
+    }
+  }, [data]);
+
+  // Puedes eliminar registros mock si ya usas la data real
   const renderDetallesRegistro = (registro: any) => (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
@@ -124,132 +155,124 @@ export function ResumenGeneral() {
       </div>
     </div>
   );
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="space-y-6"
-    >
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.1 }}
-        className="mb-6"
-      >
-        <h1 className="text-3xl font-bold text-foreground mb-2">
-          Resumen General
-        </h1>
-        <p className="text-muted-foreground">
-          Vista general de los datos de asistencia humanitaria
-        </p>
-      </motion.div>
-
+    <div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="grid gap-6 max-w-screen overflow-x-auto"
-        style={{ maxWidth: "100vw" }}
+        transition={{ duration: 0.3 }}
+        className="space-y-6"
       >
-        <div className="grid md:grid-cols-3 gap-6">
-          {/* Total de datos registrados */}
-          <motion.div
-            whileHover={{ y: -3, boxShadow: "0 2px 8px 0 rgba(0,0,0,0.08)" }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <Card className="bg-white border-2 border-primary-dark text-primary-dark">
-              <CardHeader className="flex flex-row items-center gap-3">
-                <Database className="h-8 w-8 text-primary-dark" />
-                <CardTitle className="text-primary-dark">
-                  Total de datos registrados
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-3xl font-bold text-primary-dark">
-                  {registrosRecientes.length}
-                </p>
-                <p className="text-sm text-primary-dark/80">
-                  En el rango seleccionado
-                </p>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Total de familias asistidas */}
-          <motion.div
-            whileHover={{ y: -3, boxShadow: "0 2px 8px 0 rgba(0,0,0,0.08)" }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <Card className="bg-white border-2 border-primary-dark text-primary-dark">
-              <CardHeader className="flex flex-row items-center gap-3">
-                <Users className="h-8 w-8 text-primary-dark" />
-                <CardTitle className="text-primary-dark">
-                  Total de familias asistidas
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-3xl font-bold text-primary-dark">
-                  {registrosRecientes.reduce(
-                    (acc, r) =>
-                      acc +
-                      (typeof r.kit_evento === "number" ? r.kit_evento : 0),
-                    0
-                  )}
-                </p>
-                <p className="text-sm text-primary-dark/80">
-                  Familias beneficiadas
-                </p>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Total de departamentos asistidos */}
-          <motion.div
-            whileHover={{ y: -3, boxShadow: "0 2px 8px 0 rgba(0,0,0,0.08)" }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <Card className="bg-white border-2 border-primary-dark text-primary-dark">
-              <CardHeader className="flex flex-row items-center gap-3">
-                <MapPin className="h-8 w-8 text-primary-dark" />
-                <CardTitle className="text-primary-dark">
-                  Total de departamentos asistidos
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-3xl font-bold text-primary-dark">
-                  {
-                    Array.from(
-                      new Set(registrosRecientes.map((r) => r.departamento))
-                    ).length
-                  }
-                </p>
-                <p className="text-sm text-primary-dark/80">
-                  Departamentos únicos
-                </p>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
-        <MapaParaguay />
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mb-6"
+        >
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Resumen General
+          </h1>
+          <p className="text-muted-foreground">
+            Vista general de los datos de asistencia humanitaria
+          </p>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
+          transition={{ delay: 0.2 }}
+          className="grid gap-6 max-w-screen overflow-x-auto"
+          style={{ maxWidth: "100vw" }}
         >
-          <div className="overflow-x-auto w-full">
-            <DataTable
-              title="Registros Recientes"
-              data={registrosRecientes}
-              columns={columnasRegistros}
-              onViewDetails={renderDetallesRegistro}
-              itemsPerPage={5}
-            />
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* Total de datos registrados */}
+            <motion.div
+              whileHover={{ y: -3, boxShadow: "0 2px 8px 0 rgba(0,0,0,0.08)" }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <Card className="bg-white border-2 border-primary-dark text-primary-dark">
+                <CardHeader className="flex flex-row items-center gap-3">
+                  <Database className="h-8 w-8 text-primary-dark" />
+                  <CardTitle className="text-primary-dark">
+                    Total de datos registrados
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-3xl font-bold text-primary-dark">
+                    {cardsResumen?.cantidad_registros_total || 0}
+                  </p>
+                  <p className="text-sm text-primary-dark/80">
+                    En el rango seleccionado
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Total de familias asistidas */}
+            <motion.div
+              whileHover={{ y: -3, boxShadow: "0 2px 8px 0 rgba(0,0,0,0.08)" }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <Card className="bg-white border-2 border-primary-dark text-primary-dark">
+                <CardHeader className="flex flex-row items-center gap-3">
+                  <Users className="h-8 w-8 text-primary-dark" />
+                  <CardTitle className="text-primary-dark">
+                    Total de familias asistidas
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-3xl font-bold text-primary-dark">
+                    {cardsResumen?.cantidad_kit_evento || 0}
+                  </p>
+                  <p className="text-sm text-primary-dark/80">
+                    Familias beneficiadas
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Total de departamentos asistidos */}
+            <motion.div
+              whileHover={{ y: -3, boxShadow: "0 2px 8px 0 rgba(0,0,0,0.08)" }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <Card className="bg-white border-2 border-primary-dark text-primary-dark">
+                <CardHeader className="flex flex-row items-center gap-3">
+                  <MapPin className="h-8 w-8 text-primary-dark" />
+                  <CardTitle className="text-primary-dark">
+                    Total de departamentos asistidos
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-3xl font-bold text-primary-dark">
+                    {cardsResumen.cantidad_departamentos || 0}
+                  </p>
+                  <p className="text-sm text-primary-dark/80">
+                    Departamentos únicos
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
+          <MapaParaguay />
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <div className="overflow-x-auto w-full">
+              <DataTable
+                title="Registros Recientes"
+                data={registrosRecientes}
+                columns={columnasRegistros}
+                onViewDetails={renderDetallesRegistro}
+                itemsPerPage={5}
+              />
+            </div>
+          </motion.div>
         </motion.div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
