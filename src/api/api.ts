@@ -11,8 +11,13 @@ export const api = createApi({
         params,
       }),
     }),
-    // ...otros endpoints base
+    asistenciaDetallada: builder.query({
+      query: (params: any) => ({
+        url: "detallada/",
+        params,
+      }),
+    }),
   }),
 });
 
-export const { useResumenGeneralQuery } = api;
+export const { useResumenGeneralQuery, useAsistenciaDetalladaQuery } = api;

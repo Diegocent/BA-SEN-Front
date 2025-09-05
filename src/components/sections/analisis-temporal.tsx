@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import { DataTable } from "../data-table";
+import { useGetAnualQuery, useGetMensualQuery } from "@/api";
 
 export function AnalisisTemporal() {
   const resumenAnual = [
@@ -77,19 +78,22 @@ export function AnalisisTemporal() {
   ];
 
   const columnasAnual = [
-    { key: "año", label: "Año" },
+    { key: "anio", label: "Año" },
     { key: "kit_sentencia", label: "Kits por sentencia de la corte" },
     { key: "kit_evento", label: "Kits de asistencia por eventos adversos" },
     { key: "chapas", label: "Chapas" },
   ];
 
   const columnasMensual = [
-    { key: "año", label: "Año" },
-    { key: "mes", label: "Mes" },
+    { key: "anio", label: "Año" },
+    { key: "nombre_mes", label: "Mes" },
     { key: "kit_sentencia", label: "Kits por sentencia de la corte" },
     { key: "kit_evento", label: "Kits de asistencia por eventos adversos" },
     { key: "chapas", label: "Chapas" },
   ];
+
+  const { data: dataAnual } = useGetAnualQuery({});
+  const { data: dataMensual } = useGetMensualQuery({});
 
   return (
     <motion.div
@@ -217,7 +221,7 @@ export function AnalisisTemporal() {
           </CardHeader>
           <CardContent>
             <DataTable
-              data={resumenAnual}
+              data={dataAnual || []}
               columns={columnasAnual}
               searchPlaceHolder="Buscar año..."
               title={""}
@@ -237,7 +241,7 @@ export function AnalisisTemporal() {
           </CardHeader>
           <CardContent>
             <DataTable
-              data={detalleMensual}
+              data={dataMensual || []}
               columns={columnasMensual}
               searchPlaceHolder="Buscar mes..."
               title={""}

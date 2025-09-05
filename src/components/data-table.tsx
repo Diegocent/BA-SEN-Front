@@ -23,13 +23,21 @@ interface Column {
   sortable?: boolean;
 }
 
+interface DataTablePaginated {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: any[];
+}
+
 interface DataTableProps {
   title: string;
-  data: any[];
+  data: any[] | DataTablePaginated;
   columns: Column[];
   onViewDetails: (item: any) => React.ReactNode;
   itemsPerPage?: number;
   searchPlaceHolder?: string;
+  onPageChange?: (url: string | null) => void;
 }
 
 export function DataTable({
@@ -39,21 +47,24 @@ export function DataTable({
   onViewDetails,
   itemsPerPage = 10,
   searchPlaceHolder = "Buscar...",
+  onPageChange,
 }: DataTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
-  const filteredData = useMemo(() => {
-    if (!searchTerm) return data;
+  // Si data es paginada, usar results
+  const rawData = Array.isArray(data) ? data : data?.results ?? [];
 
-    return data.filter((item) =>
+  const filteredData = useMemo(() => {
+    if (!searchTerm) return rawData;
+    return rawData.filter((item) =>
       Object.values(item).some((value) =>
         String(value).toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
-  }, [data, searchTerm]);
+  }, [rawData, searchTerm]);
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -140,31 +151,30 @@ export function DataTable({
           </Table>
         </div>
 
-        {totalPages > 1 && (
+        {/* Paginación nativa del backend si existe */}
+        {data && !Array.isArray(data) && (
           <div className="flex items-center justify-between mt-4">
             <p className="text-sm text-muted-foreground">
               Mostrando {startIndex + 1} a{" "}
               {Math.min(startIndex + itemsPerPage, filteredData.length)} de{" "}
-              {filteredData.length} registros
+              {data.count} registros
             </p>
             <div className="flex items-center space-x-2">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
+                onClick={() => onPageChange && onPageChange(data.previous)}
+                disabled={!data.previous}
               >
                 <ChevronLeft className="h-4 w-4" />
                 Anterior
               </Button>
-              <span className="text-sm">
-                Página {currentPage} de {totalPages}
-              </span>
+              <span className="text-sm">Página {currentPage}</span>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
+                onClick={() => onPageChange && onPageChange(data.next)}
+                disabled={!data.next}
               >
                 Siguiente
                 <ChevronRight className="h-4 w-4" />

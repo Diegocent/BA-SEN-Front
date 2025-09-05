@@ -3,61 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Database, Users, MapPin } from "lucide-react";
 import { MapaParaguay } from "../mapa-paraguay";
 import { DataTable } from "../data-table";
-import { useResumenGeneralQuery } from "../../api";
+import { useResumenGeneralQuery, useAsistenciaDetalladaQuery } from "../../api";
 import { useEffect, useState } from "react";
 
-const registrosRecientes = [
-  {
-    fecha: "2024-01-15",
-    localidad: "Asunción",
-    distrito: "Asunción",
-    departamento: "Central",
-    evento: "Inundación",
-    kit_sentencia: 10,
-    kit_evento: 20,
-    chapas: 50,
-  },
-  {
-    fecha: "2024-01-14",
-    localidad: "Ciudad del Este",
-    distrito: "Ciudad del Este",
-    departamento: "Alto Paraná",
-    evento: "Incendio",
-    kit_sentencia: 5,
-    kit_evento: 15,
-    chapas: 30,
-  },
-  {
-    fecha: "2024-01-13",
-    localidad: "Encarnación",
-    distrito: "Encarnación",
-    departamento: "Itapúa",
-    evento: "Temporal",
-    kit_sentencia: 8,
-    kit_evento: 12,
-    chapas: 25,
-  },
-  {
-    fecha: "2024-01-12",
-    localidad: "Coronel Oviedo",
-    distrito: "Coronel Oviedo",
-    departamento: "Caaguazú",
-    evento: "Granizada",
-    kit_sentencia: 3,
-    kit_evento: 10,
-    chapas: 18,
-  },
-  {
-    fecha: "2024-01-11",
-    localidad: "Paraguarí",
-    distrito: "Paraguarí",
-    departamento: "Paraguarí",
-    evento: "Viento fuerte",
-    kit_sentencia: 2,
-    kit_evento: 7,
-    chapas: 12,
-  },
-];
+// ...existing code...
 
 const columnasRegistros = [
   { key: "fecha", label: "Fecha" },
@@ -67,7 +16,7 @@ const columnasRegistros = [
   { key: "evento", label: "Evento" },
   { key: "kit_sentencia", label: "Kit de sentencia de la Corte" },
   { key: "kit_evento", label: "Kit de asistencia por evento adverso" },
-  { key: "chapas", label: "Chapas" },
+  { key: "chapa_fibrocemento_cantidad", label: "Chapas" },
 ];
 
 type ResumenGeneralData = {
@@ -77,6 +26,18 @@ type ResumenGeneralData = {
 };
 
 export function ResumenGeneral() {
+  const [pageUrl, setPageUrl] = useState<string | null>(null);
+  const {
+    data: registrosRecientes,
+    error: errorAsistencia,
+    isLoading: isLoadingAsistencia,
+  } = useAsistenciaDetalladaQuery(
+    pageUrl ? { page: pageUrl.split("=")[1] } : {}
+  ) as {
+    data: any | undefined;
+    error: any;
+    isLoading: boolean;
+  };
   // Hook de RTK Query para el endpoint resumen-general
   const { data, error, isLoading } = useResumenGeneralQuery({}) as {
     data: ResumenGeneralData | undefined;
@@ -264,10 +225,18 @@ export function ResumenGeneral() {
             <div className="overflow-x-auto w-full">
               <DataTable
                 title="Registros Recientes"
-                data={registrosRecientes}
+                data={
+                  registrosRecientes || {
+                    count: 0,
+                    next: null,
+                    previous: null,
+                    results: [],
+                  }
+                }
                 columns={columnasRegistros}
                 onViewDetails={renderDetallesRegistro}
                 itemsPerPage={5}
+                onPageChange={(url) => setPageUrl(url)}
               />
             </div>
           </motion.div>

@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "framer-motion";
 import {
   Card,
@@ -9,6 +7,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import { DataTable } from "../data-table";
+import { useGetPorDepartamentoQuery, useGetPorUbicacionQuery } from "@/api";
 
 export function AnalisisGeografico() {
   const resumenDepartamentos = [
@@ -44,44 +43,6 @@ export function AnalisisGeografico() {
     },
   ];
 
-  const resumenDistritos = [
-    {
-      departamento: "Central",
-      distrito: "Asunción",
-      kit_sentencia: 12,
-      kit_evento: 30,
-      chapas: 60,
-    },
-    {
-      departamento: "Alto Paraná",
-      distrito: "Ciudad del Este",
-      kit_sentencia: 8,
-      kit_evento: 22,
-      chapas: 35,
-    },
-    {
-      departamento: "Itapúa",
-      distrito: "Encarnación",
-      kit_sentencia: 5,
-      kit_evento: 15,
-      chapas: 20,
-    },
-    {
-      departamento: "Caaguazú",
-      distrito: "Coronel Oviedo",
-      kit_sentencia: 4,
-      kit_evento: 10,
-      chapas: 12,
-    },
-    {
-      departamento: "San Pedro",
-      distrito: "San Pedro del Ycuamandiyú",
-      kit_sentencia: 3,
-      kit_evento: 8,
-      chapas: 10,
-    },
-  ];
-
   const columnasDepartamentos = [
     { key: "departamento", label: "Departamento" },
     { key: "kit_sentencia", label: "Kits Sentencia" },
@@ -96,7 +57,8 @@ export function AnalisisGeografico() {
     { key: "kit_evento", label: "Kits de asistencia por eventos adversos" },
     { key: "chapas", label: "Chapas" },
   ];
-
+  const { data: dataDistrito } = useGetPorUbicacionQuery({});
+  const { data: dataDepartamento } = useGetPorDepartamentoQuery({});
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -191,7 +153,7 @@ export function AnalisisGeografico() {
           </CardHeader>
           <CardContent>
             <DataTable
-              data={resumenDepartamentos}
+              data={dataDepartamento || {}}
               columns={columnasDepartamentos}
               searchPlaceHolder="Buscar departamento..."
               title={""}
@@ -211,7 +173,7 @@ export function AnalisisGeografico() {
           </CardHeader>
           <CardContent>
             <DataTable
-              data={resumenDistritos}
+              data={dataDistrito || {}}
               columns={columnasDistritos}
               searchPlaceHolder="Buscar distrito..."
               title={""}

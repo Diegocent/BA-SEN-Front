@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import { DataTable } from "../data-table";
-
+import { useGetPorEventoQuery, useEventosPorDepartamentoQuery } from "@/api";
 export function AnalisisEventos() {
   const resumenTipoEventos = [
     {
@@ -81,7 +81,7 @@ export function AnalisisEventos() {
   ];
 
   const columnasTipoEventos = [
-    { key: "tipoEvento", label: "Tipo de evento" },
+    { key: "evento", label: "Tipo de evento" },
     { key: "numeroOcurrencias", label: "Numero de Ocurrencias" },
     { key: "kit_sentencia", label: "Kit sentencia" },
     { key: "kit_evento", label: "Kit por eventos adversos" },
@@ -95,7 +95,8 @@ export function AnalisisEventos() {
     { key: "kit_evento", label: "Kits por eventos adversos" },
     { key: "chapas", label: "Chapas" },
   ];
-
+  const { data: dataEventos } = useGetPorEventoQuery({});
+  const { data: dataPorDepartamento } = useEventosPorDepartamentoQuery({});
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -230,7 +231,7 @@ export function AnalisisEventos() {
           </CardHeader>
           <CardContent>
             <DataTable
-              data={resumenTipoEventos}
+              data={dataEventos || []}
               columns={columnasTipoEventos}
               searchPlaceHolder="Buscar tipo de evento..."
               title={""}
@@ -252,7 +253,7 @@ export function AnalisisEventos() {
           </CardHeader>
           <CardContent>
             <DataTable
-              data={eventosPorDepartamento}
+              data={dataPorDepartamento || []}
               columns={columnasEventosDepartamento}
               searchPlaceHolder="Buscar departamento..."
               title={""}
