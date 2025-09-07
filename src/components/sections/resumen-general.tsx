@@ -235,7 +235,7 @@ export function ResumenGeneral() {
                 }
                 columns={columnasRegistros}
                 onViewDetails={renderDetallesRegistro}
-                itemsPerPage={5}
+                itemsPerPage={10}
                 onPageChange={(url) => setPageUrl(url)}
               />
             </div>

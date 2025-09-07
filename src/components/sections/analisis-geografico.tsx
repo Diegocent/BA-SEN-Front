@@ -8,41 +8,9 @@ import {
 } from "../ui/card";
 import { DataTable } from "../data-table";
 import { useGetPorDepartamentoQuery, useGetPorUbicacionQuery } from "@/api";
+import { useState } from "react";
 
 export function AnalisisGeografico() {
-  const resumenDepartamentos = [
-    {
-      departamento: "Central",
-      kit_sentencia: 40,
-      kit_evento: 120,
-      chapas: 300,
-    },
-    {
-      departamento: "Alto Paraná",
-      kit_sentencia: 25,
-      kit_evento: 80,
-      chapas: 150,
-    },
-    {
-      departamento: "Itapúa",
-      kit_sentencia: 18,
-      kit_evento: 60,
-      chapas: 90,
-    },
-    {
-      departamento: "Caaguazú",
-      kit_sentencia: 10,
-      kit_evento: 35,
-      chapas: 60,
-    },
-    {
-      departamento: "San Pedro",
-      kit_sentencia: 8,
-      kit_evento: 22,
-      chapas: 35,
-    },
-  ];
-
   const columnasDepartamentos = [
     { key: "departamento", label: "Departamento" },
     { key: "kit_sentencia", label: "Kits Sentencia" },
@@ -57,8 +25,35 @@ export function AnalisisGeografico() {
     { key: "kit_evento", label: "Kits de asistencia por eventos adversos" },
     { key: "chapas", label: "Chapas" },
   ];
-  const { data: dataDistrito } = useGetPorUbicacionQuery({});
-  const { data: dataDepartamento } = useGetPorDepartamentoQuery({});
+  // Paginación para distritos
+  const [pageUrlDistrito, setPageUrlDistrito] = useState<string | null>(null);
+  const {
+    data: dataDistrito,
+    error: errorDistrito,
+    isLoading: isLoadingDistrito,
+  } = useGetPorUbicacionQuery(
+    pageUrlDistrito ? { page: pageUrlDistrito.split("=")[1] } : {}
+  ) as {
+    data: any | undefined;
+    error: any;
+    isLoading: boolean;
+  };
+
+  // Paginación para departamentos
+  const [pageUrlDepartamento, setPageUrlDepartamento] = useState<string | null>(
+    null
+  );
+  const {
+    data: dataDepartamento,
+    error: errorDepartamento,
+    isLoading: isLoadingDepartamento,
+  } = useGetPorDepartamentoQuery(
+    pageUrlDepartamento ? { page: pageUrlDepartamento.split("=")[1] } : {}
+  ) as {
+    data: any | undefined;
+    error: any;
+    isLoading: boolean;
+  };
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -153,13 +148,21 @@ export function AnalisisGeografico() {
           </CardHeader>
           <CardContent>
             <DataTable
-              data={dataDepartamento || {}}
+              data={
+                dataDepartamento || {
+                  results: [],
+                  page: 1,
+                  page_size: 10,
+                  total_pages: 1,
+                  total: 0,
+                }
+              }
               columns={columnasDepartamentos}
               searchPlaceHolder="Buscar departamento..."
               title={""}
-              onViewDetails={function (item: any): React.ReactNode {
-                throw new Error("Function not implemented.");
-              }}
+              onViewDetails={() => null}
+              itemsPerPage={10}
+              onPageChange={setPageUrlDepartamento}
             />
           </CardContent>
         </Card>
@@ -173,13 +176,21 @@ export function AnalisisGeografico() {
           </CardHeader>
           <CardContent>
             <DataTable
-              data={dataDistrito || {}}
+              data={
+                dataDistrito || {
+                  results: [],
+                  page: 1,
+                  page_size: 10,
+                  total_pages: 1,
+                  total: 0,
+                }
+              }
               columns={columnasDistritos}
               searchPlaceHolder="Buscar distrito..."
               title={""}
-              onViewDetails={function (item: any): React.ReactNode {
-                throw new Error("Function not implemented.");
-              }}
+              onViewDetails={() => null}
+              itemsPerPage={10}
+              onPageChange={setPageUrlDistrito}
             />
           </CardContent>
         </Card>

@@ -54,31 +54,61 @@ export function DataTable({
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
-  // Si data es paginada, usar results
-  const rawData = Array.isArray(data) ? data : data?.results ?? [];
+  // Determinar si los datos están paginados
+  const isPaginated = !Array.isArray(data);
 
+  // Si data es paginada, usar results, de lo contrario usar el array completo
+  const rawData = isPaginated ? data?.results ?? [] : data;
+
+  // Filtrar datos para búsqueda (solo para datos no paginados)
   const filteredData = useMemo(() => {
-    if (!searchTerm) return rawData;
+    if (isPaginated || !searchTerm) return rawData;
     return rawData.filter((item) =>
       Object.values(item).some((value) =>
         String(value).toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
-  }, [rawData, searchTerm]);
+  }, [rawData, searchTerm, isPaginated]);
 
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = filteredData.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+  // Cálculos de paginación
+  const totalCount = isPaginated ? data.count : filteredData.length;
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+  // Calcular el rango de registros mostrados
+  const startItem = isPaginated
+    ? (currentPage - 1) * itemsPerPage + 1
+    : (currentPage - 1) * itemsPerPage + 1;
+
+  const endItem = isPaginated
+    ? Math.min(currentPage * itemsPerPage, totalCount)
+    : Math.min(currentPage * itemsPerPage, totalCount);
+
+  // Obtener datos para mostrar en la tabla
+  const paginatedData = isPaginated
+    ? rawData // Los datos ya vienen paginados del servidor
+    : filteredData.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      );
 
   const handleViewDetails = (item: any) => {
     setSelectedItem(item);
     setIsDetailOpen(true);
   };
 
-  const handlePageChange = (page: number) => {
+  // Manejar cambio de página para datos paginados del servidor
+  const handleServerPageChange = (
+    url: string | null,
+    direction: "next" | "prev"
+  ) => {
+    if (onPageChange && url) {
+      onPageChange(url);
+      setCurrentPage((prev) => (direction === "next" ? prev + 1 : prev - 1));
+    }
+  };
+
+  // Manejar cambio de página para datos locales
+  const handleLocalPageChange = (page: number) => {
     setCurrentPage(page);
   };
 
@@ -151,37 +181,65 @@ export function DataTable({
           </Table>
         </div>
 
-        {/* Paginación nativa del backend si existe */}
-        {data && !Array.isArray(data) && (
-          <div className="flex items-center justify-between mt-4">
-            <p className="text-sm text-muted-foreground">
-              Mostrando {startIndex + 1} a{" "}
-              {Math.min(startIndex + itemsPerPage, filteredData.length)} de{" "}
-              {data.count} registros
-            </p>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onPageChange && onPageChange(data.previous)}
-                disabled={!data.previous}
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Anterior
-              </Button>
-              <span className="text-sm">Página {currentPage}</span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onPageChange && onPageChange(data.next)}
-                disabled={!data.next}
-              >
-                Siguiente
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
+        {/* Paginación */}
+        <div className="flex items-center justify-between mt-4">
+          <p className="text-sm text-muted-foreground">
+            Mostrando {startItem} a {endItem} de {totalCount} registros
+          </p>
+          <div className="flex items-center space-x-2">
+            {isPaginated ? (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleServerPageChange(data.previous, "prev")}
+                  disabled={!data.previous}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Anterior
+                </Button>
+                <span className="text-sm">
+                  Página {currentPage} de {totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleServerPageChange(data.next, "next")}
+                  disabled={!data.next}
+                >
+                  Siguiente
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </>
+            ) : (
+              totalPages > 1 && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleLocalPageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Anterior
+                  </Button>
+                  <span className="text-sm">
+                    Página {currentPage} de {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleLocalPageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    Siguiente
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </>
+              )
+            )}
           </div>
-        )}
+        </div>
 
         <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
           <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto z-[100]">

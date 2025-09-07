@@ -10,6 +10,38 @@ import {
 } from "../ui/card";
 import { DataTable } from "../data-table";
 import { useGetPorEventoQuery, useEventosPorDepartamentoQuery } from "@/api";
+import { useState } from "react";
+
+function renderDetallesEvento(item: any) {
+  return (
+    <div className="space-y-2">
+      <div>
+        <span className="font-medium">Evento:</span>{" "}
+        {item.evento || item.tipoEvento}
+      </div>
+      <div>
+        <span className="font-medium">Departamento:</span> {item.departamento}
+      </div>
+      <div>
+        <span className="font-medium">Kits sentencia:</span>{" "}
+        {item.kit_sentencia}
+      </div>
+      <div>
+        <span className="font-medium">Kits evento:</span> {item.kit_evento}
+      </div>
+      <div>
+        <span className="font-medium">Chapas:</span> {item.chapas}
+      </div>
+      {item.numeroOcurrencias && (
+        <div>
+          <span className="font-medium">Ocurrencias:</span>{" "}
+          {item.numeroOcurrencias}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function AnalisisEventos() {
   const resumenTipoEventos = [
     {
@@ -95,8 +127,33 @@ export function AnalisisEventos() {
     { key: "kit_evento", label: "Kits por eventos adversos" },
     { key: "chapas", label: "Chapas" },
   ];
-  const { data: dataEventos } = useGetPorEventoQuery({});
-  const { data: dataPorDepartamento } = useEventosPorDepartamentoQuery({});
+  // Paginación para eventos
+  const [pageUrlEvento, setPageUrlEvento] = useState<string | null>(null);
+  const {
+    data: dataEventos,
+    error: errorEventos,
+    isLoading: isLoadingEventos,
+  } = useGetPorEventoQuery(
+    pageUrlEvento ? { page: pageUrlEvento.split("=")[1] } : {}
+  ) as {
+    data: any | undefined;
+    error: any;
+    isLoading: boolean;
+  };
+
+  // Paginación para eventos por departamento
+  const [pageUrlDepto, setPageUrlDepto] = useState<string | null>(null);
+  const {
+    data: dataPorDepartamento,
+    error: errorDepto,
+    isLoading: isLoadingDepto,
+  } = useEventosPorDepartamentoQuery(
+    pageUrlDepto ? { page: pageUrlDepto.split("=")[1] } : {}
+  ) as {
+    data: any | undefined;
+    error: any;
+    isLoading: boolean;
+  };
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -231,13 +288,21 @@ export function AnalisisEventos() {
           </CardHeader>
           <CardContent>
             <DataTable
-              data={dataEventos || []}
+              data={
+                dataEventos || {
+                  results: [],
+                  page: 1,
+                  page_size: 10,
+                  total_pages: 1,
+                  total: 0,
+                }
+              }
               columns={columnasTipoEventos}
               searchPlaceHolder="Buscar tipo de evento..."
               title={""}
-              onViewDetails={function (item: any): React.ReactNode {
-                throw new Error("Function not implemented.");
-              }}
+              onViewDetails={renderDetallesEvento}
+              itemsPerPage={10}
+              onPageChange={setPageUrlEvento}
             />
           </CardContent>
         </Card>
@@ -253,13 +318,21 @@ export function AnalisisEventos() {
           </CardHeader>
           <CardContent>
             <DataTable
-              data={dataPorDepartamento || []}
+              data={
+                dataPorDepartamento || {
+                  results: [],
+                  page: 1,
+                  page_size: 10,
+                  total_pages: 1,
+                  total: 0,
+                }
+              }
               columns={columnasEventosDepartamento}
               searchPlaceHolder="Buscar departamento..."
               title={""}
-              onViewDetails={function (item: any): React.ReactNode {
-                throw new Error("Function not implemented.");
-              }}
+              onViewDetails={renderDetallesEvento}
+              itemsPerPage={10}
+              onPageChange={setPageUrlDepto}
             />
           </CardContent>
         </Card>

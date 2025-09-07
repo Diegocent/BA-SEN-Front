@@ -10,6 +10,7 @@ import {
 } from "../ui/card";
 import { DataTable } from "../data-table";
 import { useGetAnualQuery, useGetMensualQuery } from "@/api";
+import { useState } from "react";
 
 export function AnalisisTemporal() {
   const resumenAnual = [
@@ -92,8 +93,33 @@ export function AnalisisTemporal() {
     { key: "chapas", label: "Chapas" },
   ];
 
-  const { data: dataAnual } = useGetAnualQuery({});
-  const { data: dataMensual } = useGetMensualQuery({});
+  // Paginación para anual
+  const [pageUrlAnual, setPageUrlAnual] = useState<string | null>(null);
+  const {
+    data: dataAnual,
+    error: errorAnual,
+    isLoading: isLoadingAnual,
+  } = useGetAnualQuery(
+    pageUrlAnual ? { page: pageUrlAnual.split("=")[1] } : {}
+  ) as {
+    data: any | undefined;
+    error: any;
+    isLoading: boolean;
+  };
+
+  // Paginación para mensual
+  const [pageUrlMensual, setPageUrlMensual] = useState<string | null>(null);
+  const {
+    data: dataMensual,
+    error: errorMensual,
+    isLoading: isLoadingMensual,
+  } = useGetMensualQuery(
+    pageUrlMensual ? { page: pageUrlMensual.split("=")[1] } : {}
+  ) as {
+    data: any | undefined;
+    error: any;
+    isLoading: boolean;
+  };
 
   return (
     <motion.div
@@ -221,13 +247,21 @@ export function AnalisisTemporal() {
           </CardHeader>
           <CardContent>
             <DataTable
-              data={dataAnual || []}
+              data={
+                dataAnual || {
+                  results: [],
+                  page: 1,
+                  page_size: 10,
+                  total_pages: 1,
+                  total: 0,
+                }
+              }
               columns={columnasAnual}
               searchPlaceHolder="Buscar año..."
               title={""}
-              onViewDetails={function (item: any): React.ReactNode {
-                throw new Error("Function not implemented.");
-              }}
+              onViewDetails={() => null}
+              itemsPerPage={10}
+              onPageChange={setPageUrlAnual}
             />
           </CardContent>
         </Card>
@@ -241,13 +275,21 @@ export function AnalisisTemporal() {
           </CardHeader>
           <CardContent>
             <DataTable
-              data={dataMensual || []}
+              data={
+                dataMensual || {
+                  results: [],
+                  page: 1,
+                  page_size: 10,
+                  total_pages: 1,
+                  total: 0,
+                }
+              }
               columns={columnasMensual}
               searchPlaceHolder="Buscar mes..."
               title={""}
-              onViewDetails={function (item: any): React.ReactNode {
-                throw new Error("Function not implemented.");
-              }}
+              onViewDetails={() => null}
+              itemsPerPage={10}
+              onPageChange={setPageUrlMensual}
             />
           </CardContent>
         </Card>
