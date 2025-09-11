@@ -8,41 +8,38 @@ import {
 } from "../ui/card";
 import { DataTable } from "../data-table";
 import { useGetPorDepartamentoQuery, useGetPorUbicacionQuery } from "@/api";
-
+import { useState } from "react";
 export function AnalisisGeografico() {
-  const resumenDepartamentos = [
-    {
-      departamento: "Central",
-      kit_sentencia: 40,
-      kit_evento: 120,
-      chapas: 300,
-    },
-    {
-      departamento: "Alto Paraná",
-      kit_sentencia: 25,
-      kit_evento: 80,
-      chapas: 150,
-    },
-    {
-      departamento: "Itapúa",
-      kit_sentencia: 18,
-      kit_evento: 60,
-      chapas: 90,
-    },
-    {
-      departamento: "Caaguazú",
-      kit_sentencia: 10,
-      kit_evento: 35,
-      chapas: 60,
-    },
-    {
-      departamento: "San Pedro",
-      kit_sentencia: 8,
-      kit_evento: 22,
-      chapas: 35,
-    },
-  ];
+  // Estado para filtros y página para departamentos
+  const [filtersDepto, setFiltersDepto] = useState<Record<string, any>>({});
+  const [pageUrlDepto, setPageUrlDepto] = useState<string | null>(null);
+  const { page: pageDepto, ...filtersDeptoWithoutPage } = filtersDepto;
+  const pageParamDepto = pageUrlDepto
+    ? {
+        page: pageUrlDepto.includes("page=")
+          ? pageUrlDepto.split("page=").pop()
+          : "1",
+      }
+    : { page: "1" };
+  const queryParamsDepto = { ...filtersDeptoWithoutPage, ...pageParamDepto };
 
+  // Estado para filtros y página para distritos
+  const [filtersDistrito, setFiltersDistrito] = useState<Record<string, any>>(
+    {}
+  );
+  const [pageUrlDistrito, setPageUrlDistrito] = useState<string | null>(null);
+  const { page: pageDistrito, ...filtersDistritoWithoutPage } = filtersDistrito;
+  const pageParamDistrito = pageUrlDistrito
+    ? {
+        page: pageUrlDistrito.includes("page=")
+          ? pageUrlDistrito.split("page=").pop()
+          : "1",
+      }
+    : { page: "1" };
+  const queryParamsDistrito = {
+    ...filtersDistritoWithoutPage,
+    ...pageParamDistrito,
+  };
   const columnasDepartamentos = [
     { key: "departamento", label: "Departamento" },
     { key: "kit_sentencia", label: "Kits Sentencia" },
@@ -57,8 +54,27 @@ export function AnalisisGeografico() {
     { key: "kit_evento", label: "Kits de asistencia por eventos adversos" },
     { key: "chapas", label: "Chapas" },
   ];
-  const { data: dataDistrito } = useGetPorUbicacionQuery({});
-  const { data: dataDepartamento } = useGetPorDepartamentoQuery({});
+  // Paginación para distritos
+  const {
+    data: dataDistrito,
+    error: errorDistrito,
+    isLoading: isLoadingDistrito,
+  } = useGetPorUbicacionQuery(queryParamsDistrito) as {
+    data: any | undefined;
+    error: any;
+    isLoading: boolean;
+  };
+
+  // Paginación para departamentos
+  const {
+    data: dataDepartamento,
+    error: errorDepartamento,
+    isLoading: isLoadingDepartamento,
+  } = useGetPorDepartamentoQuery(queryParamsDepto) as {
+    data: any | undefined;
+    error: any;
+    isLoading: boolean;
+  };
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -153,13 +169,23 @@ export function AnalisisGeografico() {
           </CardHeader>
           <CardContent>
             <DataTable
-              data={dataDepartamento || {}}
+              data={
+                dataDepartamento || {
+                  results: [],
+                  page: 1,
+                  page_size: 10,
+                  total_pages: 1,
+                  total: 0,
+                }
+              }
               columns={columnasDepartamentos}
               searchPlaceHolder="Buscar departamento..."
               title={""}
-              onViewDetails={function (item: any): React.ReactNode {
-                throw new Error("Function not implemented.");
-              }}
+              onViewDetails={() => null}
+              itemsPerPage={10}
+              onPageChange={setPageUrlDepto}
+              filters={filtersDepto}
+              setFilters={setFiltersDepto}
             />
           </CardContent>
         </Card>
@@ -173,13 +199,23 @@ export function AnalisisGeografico() {
           </CardHeader>
           <CardContent>
             <DataTable
-              data={dataDistrito || {}}
+              data={
+                dataDistrito || {
+                  results: [],
+                  page: 1,
+                  page_size: 10,
+                  total_pages: 1,
+                  total: 0,
+                }
+              }
               columns={columnasDistritos}
               searchPlaceHolder="Buscar distrito..."
               title={""}
-              onViewDetails={function (item: any): React.ReactNode {
-                throw new Error("Function not implemented.");
-              }}
+              onViewDetails={() => null}
+              itemsPerPage={10}
+              onPageChange={setPageUrlDistrito}
+              filters={filtersDistrito}
+              setFilters={setFiltersDistrito}
             />
           </CardContent>
         </Card>

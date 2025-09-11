@@ -2,21 +2,45 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Database, Users, MapPin } from "lucide-react";
 import { MapaParaguay } from "../mapa-paraguay";
-import { DataTable } from "../data-table";
+import { Column, DataTable } from "../data-table";
 import { useResumenGeneralQuery, useAsistenciaDetalladaQuery } from "../../api";
 import { useEffect, useState } from "react";
+import { data } from "framer-motion/client";
 
-// ...existing code...
-
-const columnasRegistros = [
-  { key: "fecha", label: "Fecha" },
-  { key: "localidad", label: "Localidad" },
-  { key: "distrito", label: "Distrito" },
-  { key: "departamento", label: "Departamento" },
-  { key: "evento", label: "Evento" },
-  { key: "kit_sentencia", label: "Kit de sentencia de la Corte" },
-  { key: "kit_evento", label: "Kit de asistencia por evento adverso" },
-  { key: "chapa_fibrocemento_cantidad", label: "Chapas" },
+const columnasRegistros: Column[] = [
+  { key: "fecha", label: "Fecha", dataType: "date", filterType: "date" },
+  {
+    key: "localidad",
+    label: "Localidad",
+    dataType: "text",
+    filterType: "text",
+  },
+  { key: "distrito", label: "Distrito", dataType: "text", filterType: "text" },
+  {
+    key: "departamento",
+    label: "Departamento",
+    dataType: "text",
+    filterType: "text",
+  },
+  { key: "evento", label: "Evento", dataType: "text", filterType: "text" },
+  {
+    key: "kit_sentencia",
+    label: "Kit de sentencia de la Corte",
+    dataType: "number",
+    filterType: "text",
+  },
+  {
+    key: "kit_evento",
+    label: "Kit de asistencia por evento adverso",
+    dataType: "number",
+    filterType: "text",
+  },
+  {
+    key: "chapa_fibrocemento_cantidad",
+    label: "Chapas",
+    dataType: "number",
+    filterType: "text",
+  },
 ];
 
 type ResumenGeneralData = {
@@ -26,14 +50,24 @@ type ResumenGeneralData = {
 };
 
 export function ResumenGeneral() {
+  // Estado para filtros y página
+  const [filters, setFilters] = useState<Record<string, any>>({});
   const [pageUrl, setPageUrl] = useState<string | null>(null);
+
+  // Construir parámetros para la consulta
+  // Eliminar cualquier 'page' de los filtros para evitar conflicto con la paginación
+  const { page, ...filtersWithoutPage } = filters;
+  const pageParam = pageUrl
+    ? { page: pageUrl.includes("page=") ? pageUrl.split("page=").pop() : "1" }
+    : { page: "1" };
+  const queryParams = { ...filtersWithoutPage, ...pageParam };
+
+  // Consulta con filtros y página
   const {
     data: registrosRecientes,
     error: errorAsistencia,
     isLoading: isLoadingAsistencia,
-  } = useAsistenciaDetalladaQuery(
-    pageUrl ? { page: pageUrl.split("=")[1] } : {}
-  ) as {
+  } = useAsistenciaDetalladaQuery(queryParams) as {
     data: any | undefined;
     error: any;
     isLoading: boolean;
@@ -235,8 +269,10 @@ export function ResumenGeneral() {
                 }
                 columns={columnasRegistros}
                 onViewDetails={renderDetallesRegistro}
-                itemsPerPage={5}
-                onPageChange={(url) => setPageUrl(url)}
+                itemsPerPage={10}
+                onPageChange={setPageUrl}
+                filters={filters}
+                setFilters={setFilters}
               />
             </div>
           </motion.div>
