@@ -94,30 +94,61 @@ export function DataTable(props: DataTableProps) {
 
   // Filtros: chips y panel
   const handleAddFilter = (colKey: string, value: any) => {
-    setFilters({ ...filters, [colKey]: value });
+    // Buscar el tipo de columna
+    const col = columns.find((c) => c.key === colKey);
+    let cleanValue = value;
+    if (col && col.dataType === "number" && typeof value === "string") {
+      // Elimina puntos para buscar correctamente
+      cleanValue = value.replace(/\./g, "");
+    }
+    setCurrentPage(1);
+    setFilters({ ...filters, [colKey]: cleanValue });
     setShowFilterPanel(false);
     setActiveFilterCol(null);
     setTextFilterValue(""); // reset al aplicar
+    if (onPageChange) {
+      onPageChange("?page=1");
+    }
   };
 
   const handleRemoveFilter = (colKey: string) => {
-    const newFilters = { ...filters };
-    delete newFilters[colKey];
+    let newFilters = { ...filters };
+    // Si el filtro es de fecha, elimina ambos
+    if (colKey === "fecha_desde" || colKey === "fecha_hasta") {
+      delete newFilters["fecha_desde"];
+      delete newFilters["fecha_hasta"];
+      setDateFrom("");
+      setDateTo("");
+    } else {
+      delete newFilters[colKey];
+    }
     setFilters(newFilters);
   };
 
-  // Formateo de celdas según dataType
+  // Formateo de celdas: separador de miles con regex para números/string numéricos de 4+ dígitos
   const formatCell = (value: any, dataType?: string) => {
-    if (dataType === "number" && typeof value === "number") {
-      return value.toLocaleString("es-ES");
+    // Si es null/undefined, mostrar vacío
+    if (value === null || value === undefined) return "";
+
+    // Separador de miles para números o strings numéricos de 4+ dígitos
+    if (
+      (typeof value === "number" && Math.abs(value) >= 1000) ||
+      (typeof value === "string" && /^-?\d{4,}$/.test(value))
+    ) {
+      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
-    if (dataType === "date" && value) {
+
+    // Formateo de fechas
+    if (
+      (dataType === "date" ||
+        (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value))) &&
+      value
+    ) {
       // Si ya viene como string YYYY-MM-DD, mostramos directo
       if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
         const [year, month, day] = value.split("-");
         return `${day}/${month}/${year}`;
       }
-
       // Si es Date u otro formato válido, fallback a toLocaleDateString
       const d = new Date(value);
       if (!isNaN(d.getTime())) {
@@ -125,10 +156,12 @@ export function DataTable(props: DataTableProps) {
       }
     }
 
+    // Por defecto, mostrar el valor tal cual
     return value;
   };
 
-  const [dateFilterValue, setDateFilterValue] = useState<String | null>(null);
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
 
   return (
     <Card>
@@ -222,12 +255,29 @@ export function DataTable(props: DataTableProps) {
                   }
 
                   if (col.filterType === "date") {
-                    const handleDateChange = (
-                      e: React.ChangeEvent<HTMLInputElement>
-                    ) => {
-                      const value = e.target.value; // viene en formato YYYY-MM-DD
-                      if (value) {
-                        setDateFilterValue(value); // convertimos a Date
+                    // Helpers para hoy en formato YYYY-MM-DD
+                    const today = new Date();
+                    const yyyy = today.getFullYear();
+                    const mm = String(today.getMonth() + 1).padStart(2, "0");
+                    const dd = String(today.getDate()).padStart(2, "0");
+                    const todayStr = `${yyyy}-${mm}-${dd}`;
+
+                    const handleBuscar = () => {
+                      // Si ambos vacíos, autocompletar con hoy
+                      const from = dateFrom || todayStr;
+                      const to = dateTo || todayStr;
+                      setDateFrom(from);
+                      setDateTo(to);
+                      setCurrentPage(1);
+                      setFilters({
+                        ...filters,
+                        fecha_desde: from,
+                        fecha_hasta: to,
+                      });
+                      setShowFilterPanel(false);
+                      setActiveFilterCol(null);
+                      if (onPageChange) {
+                        onPageChange("?page=1");
                       }
                     };
 
@@ -235,21 +285,21 @@ export function DataTable(props: DataTableProps) {
                       <div className="flex gap-2 items-center">
                         <Input
                           type="date"
-                          value={
-                            dateFilterValue
-                              ? dateFilterValue.toString().slice(0, 10)
-                              : ""
-                          }
-                          onChange={handleDateChange}
+                          value={dateFrom}
+                          onChange={(e) => setDateFrom(e.target.value)}
+                          placeholder="Desde"
+                        />
+                        <span>a</span>
+                        <Input
+                          type="date"
+                          value={dateTo}
+                          onChange={(e) => setDateTo(e.target.value)}
+                          placeholder="Hasta"
                         />
                         <Button
                           variant="secondary"
                           size="sm"
-                          onClick={() => {
-                            if (dateFilterValue) {
-                              handleAddFilter(col.key, dateFilterValue);
-                            }
-                          }}
+                          onClick={handleBuscar}
                         >
                           <Search className="h-4 w-4" />
                         </Button>
@@ -263,27 +313,52 @@ export function DataTable(props: DataTableProps) {
           )}
           {/* Chips de filtros activos */}
           <div className="flex flex-wrap gap-2 mt-2">
-            {Object.entries(filters).map(([k, v]) => {
-              const col = columns.find((c: Column) => c.key === k);
-              if (!col) return null;
-              return (
-                <span
-                  key={k}
-                  className="flex items-center bg-primary/10 text-primary px-2 py-1 rounded-full text-xs"
+            {/* Mostrar chip especial para rango de fechas si ambos están en filters */}
+            {filters.fecha_desde && filters.fecha_hasta && (
+              <span
+                key="fecha_rango"
+                className="flex items-center bg-primary/10 text-primary px-2 py-1 rounded-full text-xs"
+              >
+                Fecha: {formatCell(filters.fecha_desde, "date")} a{" "}
+                {formatCell(filters.fecha_hasta, "date")}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="ml-1"
+                  onClick={() => {
+                    handleRemoveFilter("fecha_desde");
+                    handleRemoveFilter("fecha_hasta");
+                    setDateFrom("");
+                    setDateTo("");
+                  }}
                 >
-                  {col.label}:{" "}
-                  {col.filterType === "date" ? formatCell(v, "date") : v}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="ml-1"
-                    onClick={() => handleRemoveFilter(k)}
+                  ×
+                </Button>
+              </span>
+            )}
+            {/* Otros filtros normales */}
+            {Object.entries(filters)
+              .filter(([k]) => k !== "fecha_desde" && k !== "fecha_hasta")
+              .map(([k, v]) => {
+                const col = columns.find((c: Column) => c.key === k);
+                if (!col) return null;
+                return (
+                  <span
+                    key={k}
+                    className="flex items-center bg-primary/10 text-primary px-2 py-1 rounded-full text-xs"
                   >
-                    ×
-                  </Button>
-                </span>
-              );
-            })}
+                    {col.label}: {v}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="ml-1"
+                      onClick={() => handleRemoveFilter(k)}
+                    >
+                      ×
+                    </Button>
+                  </span>
+                );
+              })}
           </div>
         </div>
       </CardHeader>

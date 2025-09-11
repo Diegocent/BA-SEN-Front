@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "framer-motion";
 import {
   Card,
@@ -11,72 +9,35 @@ import {
 import { DataTable } from "../data-table";
 import { useGetAnualQuery, useGetMensualQuery } from "@/api";
 import { useState } from "react";
-
 export function AnalisisTemporal() {
-  const resumenAnual = [
-    {
-      año: 2024,
-      kit_sentencia: 120,
-      kit_evento: 320,
-      chapas: 800,
-    },
-    {
-      año: 2023,
-      kit_sentencia: 110,
-      kit_evento: 280,
-      chapas: 700,
-    },
-    {
-      año: 2022,
-      kit_sentencia: 90,
-      kit_evento: 210,
-      chapas: 500,
-    },
-    {
-      año: 2021,
-      kit_sentencia: 70,
-      kit_evento: 160,
-      chapas: 400,
-    },
-  ];
+  // Estado para filtros y página para anual
+  const [filtersAnual, setFiltersAnual] = useState<Record<string, any>>({});
+  const [pageUrlAnual, setPageUrlAnual] = useState<string | null>(null);
+  const { page: pageAnual, ...filtersAnualWithoutPage } = filtersAnual;
+  const pageParamAnual = pageUrlAnual
+    ? {
+        page: pageUrlAnual.includes("page=")
+          ? pageUrlAnual.split("page=").pop()
+          : "1",
+      }
+    : { page: "1" };
+  const queryParamsAnual = { ...filtersAnualWithoutPage, ...pageParamAnual };
 
-  const detalleMensual = [
-    {
-      año: 2024,
-      mes: "Enero",
-      kit_sentencia: 12,
-      kit_evento: 30,
-      chapas: 60,
-    },
-    {
-      año: 2024,
-      mes: "Febrero",
-      kit_sentencia: 8,
-      kit_evento: 22,
-      chapas: 35,
-    },
-    {
-      año: 2024,
-      mes: "Marzo",
-      kit_sentencia: 5,
-      kit_evento: 15,
-      chapas: 20,
-    },
-    {
-      año: 2024,
-      mes: "Abril",
-      kit_sentencia: 4,
-      kit_evento: 10,
-      chapas: 12,
-    },
-    {
-      año: 2024,
-      mes: "Mayo",
-      kit_sentencia: 3,
-      kit_evento: 8,
-      chapas: 10,
-    },
-  ];
+  // Estado para filtros y página para mensual
+  const [filtersMensual, setFiltersMensual] = useState<Record<string, any>>({});
+  const [pageUrlMensual, setPageUrlMensual] = useState<string | null>(null);
+  const { page: pageMensual, ...filtersMensualWithoutPage } = filtersMensual;
+  const pageParamMensual = pageUrlMensual
+    ? {
+        page: pageUrlMensual.includes("page=")
+          ? pageUrlMensual.split("page=").pop()
+          : "1",
+      }
+    : { page: "1" };
+  const queryParamsMensual = {
+    ...filtersMensualWithoutPage,
+    ...pageParamMensual,
+  };
 
   const columnasAnual = [
     { key: "anio", label: "Año" },
@@ -94,28 +55,22 @@ export function AnalisisTemporal() {
   ];
 
   // Paginación para anual
-  const [pageUrlAnual, setPageUrlAnual] = useState<string | null>(null);
   const {
     data: dataAnual,
     error: errorAnual,
     isLoading: isLoadingAnual,
-  } = useGetAnualQuery(
-    pageUrlAnual ? { page: pageUrlAnual.split("=")[1] } : {}
-  ) as {
+  } = useGetAnualQuery(queryParamsAnual) as {
     data: any | undefined;
     error: any;
     isLoading: boolean;
   };
 
   // Paginación para mensual
-  const [pageUrlMensual, setPageUrlMensual] = useState<string | null>(null);
   const {
     data: dataMensual,
     error: errorMensual,
     isLoading: isLoadingMensual,
-  } = useGetMensualQuery(
-    pageUrlMensual ? { page: pageUrlMensual.split("=")[1] } : {}
-  ) as {
+  } = useGetMensualQuery(queryParamsMensual) as {
     data: any | undefined;
     error: any;
     isLoading: boolean;
@@ -262,6 +217,8 @@ export function AnalisisTemporal() {
               onViewDetails={() => null}
               itemsPerPage={10}
               onPageChange={setPageUrlAnual}
+              filters={filtersAnual}
+              setFilters={setFiltersAnual}
             />
           </CardContent>
         </Card>
@@ -290,6 +247,8 @@ export function AnalisisTemporal() {
               onViewDetails={() => null}
               itemsPerPage={10}
               onPageChange={setPageUrlMensual}
+              filters={filtersMensual}
+              setFilters={setFiltersMensual}
             />
           </CardContent>
         </Card>

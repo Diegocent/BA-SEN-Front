@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { DataTable } from "../data-table";
+import { Column, DataTable } from "../data-table";
 import { useGetPorEventoQuery, useEventosPorDepartamentoQuery } from "@/api";
 import { useState } from "react";
 
@@ -43,117 +43,90 @@ function renderDetallesEvento(item: any) {
 }
 
 export function AnalisisEventos() {
-  const resumenTipoEventos = [
+  // Columnas
+  const columnasTipoEventos: Column[] = [
     {
-      tipoEvento: "Inundaciones",
-      numeroOcurrencias: 145,
-      kit_sentencia: 40,
-      kit_evento: 120,
-      chapas: 300,
+      key: "evento",
+      label: "Tipo de evento",
+      dataType: "text",
+      filterType: "text",
     },
     {
-      tipoEvento: "Sequías",
-      numeroOcurrencias: 89,
-      kit_sentencia: 25,
-      kit_evento: 80,
-      chapas: 150,
+      key: "numeroOcurrencias",
+      label: "Numero de Ocurrencias",
+      dataType: "number",
+      filterType: "text",
     },
     {
-      tipoEvento: "Incendios",
-      numeroOcurrencias: 67,
-      kit_sentencia: 18,
-      kit_evento: 60,
-      chapas: 90,
+      key: "kit_sentencia",
+      label: "Kit sentencia",
+      dataType: "number",
+      filterType: "text",
     },
     {
-      tipoEvento: "Tormentas Severas",
-      numeroOcurrencias: 45,
-      kit_sentencia: 10,
-      kit_evento: 35,
-      chapas: 60,
+      key: "kit_evento",
+      label: "Kit por eventos adversos",
+      dataType: "number",
+      filterType: "text",
     },
+    { key: "chapas", label: "Chapas", dataType: "number", filterType: "text" },
+  ];
+  const columnasEventosDepartamento: Column[] = [
+    {
+      key: "departamento",
+      label: "Departamento",
+      dataType: "text",
+      filterType: "text",
+    },
+    { key: "evento", label: "Evento", dataType: "text", filterType: "text" },
+    {
+      key: "kit_sentencia",
+      label: "Kits sentencia",
+      dataType: "number",
+      filterType: "text",
+    },
+    {
+      key: "kit_evento",
+      label: "Kits por eventos adversos",
+      dataType: "number",
+      filterType: "text",
+    },
+    { key: "chapas", label: "Chapas", dataType: "number", filterType: "text" },
   ];
 
-  const eventosPorDepartamento = [
-    {
-      departamento: "Central",
-      evento: "Inundación",
-      kit_sentencia: 12,
-      kit_evento: 30,
-      chapas: 60,
-    },
-    {
-      departamento: "Alto Paraná",
-      evento: "Sequía",
-      kit_sentencia: 8,
-      kit_evento: 22,
-      chapas: 35,
-    },
-    {
-      departamento: "Itapúa",
-      evento: "Incendio",
-      kit_sentencia: 5,
-      kit_evento: 15,
-      chapas: 20,
-    },
-    {
-      departamento: "Caaguazú",
-      evento: "Tormenta",
-      kit_sentencia: 4,
-      kit_evento: 10,
-      chapas: 12,
-    },
-    {
-      departamento: "San Pedro",
-      evento: "Granizada",
-      kit_sentencia: 3,
-      kit_evento: 8,
-      chapas: 10,
-    },
-  ];
-
-  const columnasTipoEventos = [
-    { key: "evento", label: "Tipo de evento" },
-    { key: "numeroOcurrencias", label: "Numero de Ocurrencias" },
-    { key: "kit_sentencia", label: "Kit sentencia" },
-    { key: "kit_evento", label: "Kit por eventos adversos" },
-    { key: "chapas", label: "Chapas" },
-  ];
-
-  const columnasEventosDepartamento = [
-    { key: "departamento", label: "Departamento" },
-    { key: "evento", label: "Evento" },
-    { key: "kit_sentencia", label: "Kits sentencia" },
-    { key: "kit_evento", label: "Kits por eventos adversos" },
-    { key: "chapas", label: "Chapas" },
-  ];
-  // Paginación para eventos
+  // Estado y lógica para filtros y paginación por tipo de evento
+  const [filtersEvento, setFiltersEvento] = useState<Record<string, any>>({});
   const [pageUrlEvento, setPageUrlEvento] = useState<string | null>(null);
-  const {
-    data: dataEventos,
-    error: errorEventos,
-    isLoading: isLoadingEventos,
-  } = useGetPorEventoQuery(
-    pageUrlEvento ? { page: pageUrlEvento.split("=")[1] } : {}
-  ) as {
-    data: any | undefined;
-    error: any;
-    isLoading: boolean;
-  };
+  const { page: pageEvento, ...filtersEventoWithoutPage } = filtersEvento;
+  const pageParamEvento = pageUrlEvento
+    ? {
+        page: pageUrlEvento.includes("page=")
+          ? pageUrlEvento.split("page=").pop()
+          : "1",
+      }
+    : { page: "1" };
+  const queryParamsEvento = { ...filtersEventoWithoutPage, ...pageParamEvento };
 
-  // Paginación para eventos por departamento
+  // Estado y lógica para filtros y paginación por departamento
+  const [filtersDepto, setFiltersDepto] = useState<Record<string, any>>({});
   const [pageUrlDepto, setPageUrlDepto] = useState<string | null>(null);
-  const {
-    data: dataPorDepartamento,
-    error: errorDepto,
-    isLoading: isLoadingDepto,
-  } = useEventosPorDepartamentoQuery(
-    pageUrlDepto ? { page: pageUrlDepto.split("=")[1] } : {}
-  ) as {
+  const { page: pageDepto, ...filtersDeptoWithoutPage } = filtersDepto;
+  const pageParamDepto = pageUrlDepto
+    ? {
+        page: pageUrlDepto.includes("page=")
+          ? pageUrlDepto.split("page=").pop()
+          : "1",
+      }
+    : { page: "1" };
+  const queryParamsDepto = { ...filtersDeptoWithoutPage, ...pageParamDepto };
+
+  // Querys
+  const { data: dataEventos } = useGetPorEventoQuery(queryParamsEvento) as {
     data: any | undefined;
-    error: any;
-    isLoading: boolean;
   };
+  const { data: dataPorDepartamento } = useEventosPorDepartamentoQuery(
+    queryParamsDepto
+  ) as { data: any | undefined };
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -303,6 +276,8 @@ export function AnalisisEventos() {
               onViewDetails={renderDetallesEvento}
               itemsPerPage={10}
               onPageChange={setPageUrlEvento}
+              filters={filtersEvento}
+              setFilters={setFiltersEvento}
             />
           </CardContent>
         </Card>
@@ -333,6 +308,8 @@ export function AnalisisEventos() {
               onViewDetails={renderDetallesEvento}
               itemsPerPage={10}
               onPageChange={setPageUrlDepto}
+              filters={filtersDepto}
+              setFilters={setFiltersDepto}
             />
           </CardContent>
         </Card>

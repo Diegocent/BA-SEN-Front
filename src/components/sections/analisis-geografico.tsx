@@ -9,8 +9,37 @@ import {
 import { DataTable } from "../data-table";
 import { useGetPorDepartamentoQuery, useGetPorUbicacionQuery } from "@/api";
 import { useState } from "react";
-
 export function AnalisisGeografico() {
+  // Estado para filtros y página para departamentos
+  const [filtersDepto, setFiltersDepto] = useState<Record<string, any>>({});
+  const [pageUrlDepto, setPageUrlDepto] = useState<string | null>(null);
+  const { page: pageDepto, ...filtersDeptoWithoutPage } = filtersDepto;
+  const pageParamDepto = pageUrlDepto
+    ? {
+        page: pageUrlDepto.includes("page=")
+          ? pageUrlDepto.split("page=").pop()
+          : "1",
+      }
+    : { page: "1" };
+  const queryParamsDepto = { ...filtersDeptoWithoutPage, ...pageParamDepto };
+
+  // Estado para filtros y página para distritos
+  const [filtersDistrito, setFiltersDistrito] = useState<Record<string, any>>(
+    {}
+  );
+  const [pageUrlDistrito, setPageUrlDistrito] = useState<string | null>(null);
+  const { page: pageDistrito, ...filtersDistritoWithoutPage } = filtersDistrito;
+  const pageParamDistrito = pageUrlDistrito
+    ? {
+        page: pageUrlDistrito.includes("page=")
+          ? pageUrlDistrito.split("page=").pop()
+          : "1",
+      }
+    : { page: "1" };
+  const queryParamsDistrito = {
+    ...filtersDistritoWithoutPage,
+    ...pageParamDistrito,
+  };
   const columnasDepartamentos = [
     { key: "departamento", label: "Departamento" },
     { key: "kit_sentencia", label: "Kits Sentencia" },
@@ -26,30 +55,22 @@ export function AnalisisGeografico() {
     { key: "chapas", label: "Chapas" },
   ];
   // Paginación para distritos
-  const [pageUrlDistrito, setPageUrlDistrito] = useState<string | null>(null);
   const {
     data: dataDistrito,
     error: errorDistrito,
     isLoading: isLoadingDistrito,
-  } = useGetPorUbicacionQuery(
-    pageUrlDistrito ? { page: pageUrlDistrito.split("=")[1] } : {}
-  ) as {
+  } = useGetPorUbicacionQuery(queryParamsDistrito) as {
     data: any | undefined;
     error: any;
     isLoading: boolean;
   };
 
   // Paginación para departamentos
-  const [pageUrlDepartamento, setPageUrlDepartamento] = useState<string | null>(
-    null
-  );
   const {
     data: dataDepartamento,
     error: errorDepartamento,
     isLoading: isLoadingDepartamento,
-  } = useGetPorDepartamentoQuery(
-    pageUrlDepartamento ? { page: pageUrlDepartamento.split("=")[1] } : {}
-  ) as {
+  } = useGetPorDepartamentoQuery(queryParamsDepto) as {
     data: any | undefined;
     error: any;
     isLoading: boolean;
@@ -162,7 +183,9 @@ export function AnalisisGeografico() {
               title={""}
               onViewDetails={() => null}
               itemsPerPage={10}
-              onPageChange={setPageUrlDepartamento}
+              onPageChange={setPageUrlDepto}
+              filters={filtersDepto}
+              setFilters={setFiltersDepto}
             />
           </CardContent>
         </Card>
@@ -191,6 +214,8 @@ export function AnalisisGeografico() {
               onViewDetails={() => null}
               itemsPerPage={10}
               onPageChange={setPageUrlDistrito}
+              filters={filtersDistrito}
+              setFilters={setFiltersDistrito}
             />
           </CardContent>
         </Card>
