@@ -6,6 +6,10 @@ import { Column, DataTable } from "../data-table";
 import { useResumenGeneralQuery, useAsistenciaDetalladaQuery } from "../../api";
 import { useEffect, useState } from "react";
 import { data } from "framer-motion/client";
+import GraficoDistribucionAyudasPorAnio from "./grafico-distribucion-ayudas-anio";
+import GraficoDistribucionAyudasPorDepartamento from "./grafico-distribucion-ayudas-departamento";
+import GraficoPieEventos from "./grafico-pie-eventos";
+import GraficoTendenciaMensual from "./grafico-tendencia-mensual";
 
 const columnasRegistros: Column[] = [
   { key: "fecha", label: "Fecha", dataType: "date", filterType: "date" },
@@ -151,7 +155,15 @@ export function ResumenGeneral() {
     </div>
   );
   return (
-    <div>
+    <div className="space-y-8">
+      {/* Gráfico de distribución de ayudas por año */}
+      <GraficoDistribucionAyudasPorAnio />
+      {/* Gráfico de distribución de ayudas por departamento */}
+      <GraficoDistribucionAyudasPorDepartamento />
+      {/* Gráfico circular de eventos */}
+      <GraficoPieEventos />
+      {/* Gráfico de tendencia mensual */}
+      <GraficoTendenciaMensual />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

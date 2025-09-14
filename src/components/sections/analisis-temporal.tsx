@@ -8,6 +8,9 @@ import {
 } from "../ui/card";
 import { DataTable } from "../data-table";
 import { useGetAnualQuery, useGetMensualQuery } from "@/api";
+import GraficoMensual from "./grafico-mensual-ayudas";
+import GraficoAnualAyudas from "./grafico-anual-ayudas";
+import GraficoDistribucionAnualProducto from "./grafico-distribucion-anual-producto";
 import { useState } from "react";
 export function AnalisisTemporal() {
   // Estado para filtros y página para anual
@@ -128,9 +131,7 @@ export function AnalisisTemporal() {
               <CardDescription>Distribución anual de eventos</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-48 bg-muted rounded-lg flex items-center justify-center">
-                <p className="text-muted-foreground">Gráfico anual</p>
-              </div>
+              <GraficoAnualAyudas />
             </CardContent>
           </Card>
 
@@ -140,12 +141,24 @@ export function AnalisisTemporal() {
               <CardDescription>Patrones estacionales</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-48 bg-muted rounded-lg flex items-center justify-center">
-                <p className="text-muted-foreground">Gráfico mensual</p>
-              </div>
+              <GraficoMensual />
             </CardContent>
           </Card>
         </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-success">
+              Distribución anual de ayuda principal
+            </CardTitle>
+            <CardDescription>
+              Selecciona el producto para ver su evolución anual
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <GraficoDistribucionAnualProducto />
+          </CardContent>
+        </Card>
 
         <div className="grid md:grid-cols-4 gap-4">
           <Card>

@@ -8,6 +8,10 @@ import {
 } from "../ui/card";
 import { DataTable } from "../data-table";
 import { useGetPorDepartamentoQuery, useGetPorUbicacionQuery } from "@/api";
+import GraficoTotalAyudasPorDepartamento from "./grafico-total-ayudas-departamento";
+import GraficoTopLocalidades from "./grafico-top-localidades";
+import GraficoEvolucionAyudasTopDepartamentos from "./grafico-evolucion-ayudas-top-departamentos";
+import HeatmapDepartamentoAnio from "./heatmap-departamento-anio";
 import { useState } from "react";
 export function AnalisisGeografico() {
   // Estado para filtros y página para departamentos
@@ -82,6 +86,10 @@ export function AnalisisGeografico() {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
+      <GraficoTotalAyudasPorDepartamento />
+      <GraficoTopLocalidades />
+      <GraficoEvolucionAyudasTopDepartamentos />
+      <HeatmapDepartamentoAnio />
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
