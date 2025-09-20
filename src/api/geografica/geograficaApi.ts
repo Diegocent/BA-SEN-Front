@@ -38,6 +38,12 @@ export const geograficaApi = api.injectEndpoints({
         params,
       }),
     }),
+    asistenciasPorAnioDepartamento: builder.query({
+      query: (params) => ({
+        url: "asistencias-por-anio-departamento/",
+        params,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -49,4 +55,5 @@ export const {
   useEventosPorLocalidadQuery,
   useResumenPorDepartamentoQuery,
   useIncendiosAnualesPorDepartamentoQuery,
+  useAsistenciasPorAnioDepartamentoQuery,
 } = geograficaApi;

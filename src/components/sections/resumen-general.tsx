@@ -1,11 +1,21 @@
 import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import { Database, Users, MapPin } from "lucide-react";
 import { MapaParaguay } from "../mapa-paraguay";
 import { Column, DataTable } from "../data-table";
 import { useResumenGeneralQuery, useAsistenciaDetalladaQuery } from "../../api";
 import { useEffect, useState } from "react";
 import { data } from "framer-motion/client";
+import GraficoDistribucionAyudasPorAnio from "../grafico-distribucion-ayudas-anio";
+import GraficoDistribucionAyudasPorDepartamento from "../grafico-distribucion-ayudas-departamento";
+import GraficoPieEventos from "../grafico-pie-eventos";
+import GraficoTendenciaMensual from "../grafico-tendencia-mensual";
 
 const columnasRegistros: Column[] = [
   { key: "fecha", label: "Fecha", dataType: "date", filterType: "date" },
@@ -151,7 +161,7 @@ export function ResumenGeneral() {
     </div>
   );
   return (
-    <div>
+    <div className="space-y-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -250,6 +260,77 @@ export function ResumenGeneral() {
             </motion.div>
           </div>
           <MapaParaguay />
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-primary">
+                Distribución por Tipo de Evento
+              </CardTitle>
+              <CardDescription>
+                Cantidad de eventos registrados por tipo
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                style={{
+                  paddingLeft: 5,
+                  paddingRight: 5,
+                  width: "100%",
+                }}
+              >
+                <GraficoPieEventos />
+              </motion.div>
+            </CardContent>
+          </Card>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-primary">
+                  Distribución de ayudas por año
+                </CardTitle>
+                <CardDescription>
+                  Grafico que muestra la cantidad de unidades distribuidas por
+                  producto y por año
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <GraficoDistribucionAyudasPorAnio />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-info">
+                  Distribución de ayudas por departamento
+                </CardTitle>
+                <CardDescription>
+                  Grafico que muestra la cantidad de unidades distribuidas por
+                  producto y por departamento
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <GraficoDistribucionAyudasPorDepartamento />
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-success">
+                Tendencias Temporales
+              </CardTitle>
+              <CardDescription>
+                Evolución de la asistencia humanitaria a lo largo del tiempo
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <GraficoTendenciaMensual />
+            </CardContent>
+          </Card>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
