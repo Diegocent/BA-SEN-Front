@@ -1,6 +1,6 @@
 import React from "react";
 import ReactECharts from "echarts-for-react";
-import { useTendenciaMensualAsistenciasQuery } from "../../api/temporal/temporalApi";
+import { useTendenciaMensualAsistenciasQuery } from "../api/temporal/temporalApi";
 
 export default function GraficoTendenciaMensual() {
   const { data, isLoading, isError } = useTendenciaMensualAsistenciasQuery({
@@ -50,12 +50,17 @@ export default function GraficoTendenciaMensual() {
         color: "#3b82f6",
       },
     ],
-    grid: { left: "3%", right: "4%", bottom: "10%", containLabel: true },
+    grid: {
+      left: "4%",
+      right: "4%",
+      top: "8%",
+      bottom: "10%",
+      containLabel: true,
+    },
   };
 
   return (
-    <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
-      <h3 style={{ marginBottom: 8 }}>Tendencia mensual de asistencias</h3>
+    <div style={{ background: "#fff", borderRadius: 8, padding: 2 }}>
       <ReactECharts option={option} style={{ height: 400 }} />
     </div>
   );

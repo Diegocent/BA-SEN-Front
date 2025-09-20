@@ -1,6 +1,6 @@
 import React from "react";
 import ReactECharts from "echarts-for-react";
-import { useGetPorEventoQuery } from "../../api/eventos/eventosApi";
+import { useGetPorEventoQuery } from "../api/eventos/eventosApi";
 
 export default function GraficoPieEventos() {
   const { data, isLoading, isError } = useGetPorEventoQuery({ per_page: 100 });
@@ -48,7 +48,11 @@ export default function GraficoPieEventos() {
   return (
     <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
       <h3 style={{ marginBottom: 8 }}>Distribución de eventos (pie)</h3>
-      <ReactECharts option={option} style={{ height: 400 }} />
+      <ReactECharts
+        option={option}
+        style={{ height: 400 }}
+        opts={{ renderer: "canvas", devicePixelRatio: 3 }}
+      />
     </div>
   );
 }

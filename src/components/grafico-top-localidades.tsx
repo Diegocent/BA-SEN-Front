@@ -1,6 +1,6 @@
 import React from "react";
 import ReactECharts from "echarts-for-react";
-import { useEventosPorLocalidadQuery } from "../../api/geografica/geograficaApi";
+import { useEventosPorLocalidadQuery } from "../api/geografica/geograficaApi";
 
 export default function GraficoTopLocalidades() {
   // Puedes ajustar el número de localidades top aquí
@@ -59,12 +59,11 @@ export default function GraficoTopLocalidades() {
         },
       },
     ],
-    grid: { left: 80, right: 20, bottom: 60, top: 30, containLabel: true },
+    grid: { left: 15, right: 20, bottom: 30, top: 50, containLabel: true },
   };
 
   return (
-    <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
-      <h3 style={{ marginBottom: 8 }}>Top localidades con más eventos</h3>
+    <div style={{ background: "#fff", borderRadius: 8, padding: 2 }}>
       <ReactECharts option={option} style={{ height: 320 }} />
     </div>
   );

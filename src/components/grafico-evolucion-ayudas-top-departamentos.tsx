@@ -1,6 +1,6 @@
 import React from "react";
 import ReactECharts from "echarts-for-react";
-import { useAsistenciasPorAnioDepartamentoQuery } from "../../api/geografica/geograficaApi";
+import { useAsistenciasPorAnioDepartamentoQuery } from "../api/geografica/geograficaApi";
 
 export default function GraficoEvolucionAyudasTopDepartamentos() {
   // Puedes ajustar el número de departamentos top aquí
@@ -107,9 +107,6 @@ export default function GraficoEvolucionAyudasTopDepartamentos() {
 
   return (
     <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
-      <h3 style={{ marginBottom: 8 }}>
-        Evolución de ayudas en top departamentos
-      </h3>
       <ReactECharts option={option} style={{ height: 400 }} />
     </div>
   );

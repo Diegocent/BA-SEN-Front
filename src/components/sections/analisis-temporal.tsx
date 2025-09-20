@@ -8,9 +8,10 @@ import {
 } from "../ui/card";
 import { DataTable } from "../data-table";
 import { useGetAnualQuery, useGetMensualQuery } from "@/api";
-import GraficoMensual from "./grafico-mensual-ayudas";
-import GraficoAnualAyudas from "./grafico-anual-ayudas";
-import GraficoDistribucionAnualProducto from "./grafico-distribucion-anual-producto";
+import GraficoMensual from "../grafico-mensual-ayudas";
+import GraficoAnualAyudas from "../grafico-anual-ayudas";
+import GraficoDistribucionAnualProducto from "../grafico-distribucion-anual-producto";
+import GraficoTendenciaMensual from "../grafico-tendencia-mensual";
 import { useState } from "react";
 export function AnalisisTemporal() {
   // Estado para filtros y página para anual
@@ -116,11 +117,18 @@ export function AnalisisTemporal() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-80 bg-muted rounded-lg flex items-center justify-center">
-              <p className="text-muted-foreground">
-                Aquí se mostrará el gráfico de tendencias temporales
-              </p>
-            </div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              style={{
+                paddingLeft: 5,
+                paddingRight: 5,
+                width: "100%",
+              }}
+            >
+              <GraficoTendenciaMensual />
+            </motion.div>
           </CardContent>
         </Card>
 

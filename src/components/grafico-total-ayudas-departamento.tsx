@@ -1,6 +1,6 @@
 import React from "react";
 import ReactECharts from "echarts-for-react";
-import { useGetPorDepartamentoQuery } from "../../api/geografica/geograficaApi";
+import { useGetPorDepartamentoQuery } from "../api/geografica/geograficaApi";
 
 const tiposAyuda = [
   "kit_sentencia",
@@ -37,7 +37,7 @@ export default function GraficoTotalAyudasPorDepartamento() {
       axisPointer: { type: "shadow" },
       formatter: (params: any) => {
         const p = params[0];
-        return `${p.axisValue}<br/>Total ayudas: <b>${p.data}</b>`;
+        return `${p.axisValue}<br/>Total de productos distribuidos: <b>${p.data}</b>`;
       },
     },
     xAxis: {
@@ -47,7 +47,7 @@ export default function GraficoTotalAyudasPorDepartamento() {
     },
     yAxis: {
       type: "value",
-      name: "Total de ayudas",
+      name: "Total de productos distribuidos",
     },
     series: [
       {
@@ -67,7 +67,6 @@ export default function GraficoTotalAyudasPorDepartamento() {
 
   return (
     <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
-      <h3 style={{ marginBottom: 8 }}>Total de ayudas por departamento</h3>
       <ReactECharts option={option} style={{ height: 400 }} />
     </div>
   );

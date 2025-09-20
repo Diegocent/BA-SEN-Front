@@ -1,6 +1,6 @@
 import React from "react";
 import ReactECharts from "echarts-for-react";
-import { useAsistenciasPorAnioDepartamentoQuery } from "../../api/geografica/geograficaApi";
+import { useAsistenciasPorAnioDepartamentoQuery } from "../api/geografica/geograficaApi";
 
 export default function HeatmapDepartamentoAnio() {
   const { data, isLoading, isError } = useAsistenciasPorAnioDepartamentoQuery({
@@ -110,9 +110,6 @@ export default function HeatmapDepartamentoAnio() {
 
   return (
     <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
-      <h3 style={{ marginBottom: 8 }}>
-        Heatmap departamento-año (total ayudas)
-      </h3>
       <ReactECharts option={option} style={{ height: 500 }} />
     </div>
   );

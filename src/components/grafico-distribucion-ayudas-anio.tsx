@@ -1,6 +1,6 @@
 import React from "react";
 import ReactECharts from "echarts-for-react";
-import { useGetAnualQuery } from "../../api";
+import { useGetAnualQuery } from "../api";
 
 const tiposAyuda = [
   "kit_sentencia",

@@ -8,10 +8,10 @@ import {
 } from "../ui/card";
 import { DataTable } from "../data-table";
 import { useGetPorDepartamentoQuery, useGetPorUbicacionQuery } from "@/api";
-import GraficoTotalAyudasPorDepartamento from "./grafico-total-ayudas-departamento";
-import GraficoTopLocalidades from "./grafico-top-localidades";
-import GraficoEvolucionAyudasTopDepartamentos from "./grafico-evolucion-ayudas-top-departamentos";
-import HeatmapDepartamentoAnio from "./heatmap-departamento-anio";
+import GraficoTotalAyudasPorDepartamento from "../grafico-total-ayudas-departamento";
+import GraficoTopLocalidades from "../grafico-top-localidades";
+import GraficoEvolucionAyudasTopDepartamentos from "../grafico-evolucion-ayudas-top-departamentos";
+import HeatmapDepartamentoAnio from "../heatmap-departamento-anio";
 import { useState } from "react";
 export function AnalisisGeografico() {
   // Estado para filtros y página para departamentos
@@ -86,10 +86,6 @@ export function AnalisisGeografico() {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <GraficoTotalAyudasPorDepartamento />
-      <GraficoTopLocalidades />
-      <GraficoEvolucionAyudasTopDepartamentos />
-      <HeatmapDepartamentoAnio />
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -112,17 +108,74 @@ export function AnalisisGeografico() {
       >
         <Card>
           <CardHeader>
-            <CardTitle className="text-primary">Mapa de Distribución</CardTitle>
+            <CardTitle className="text-primary">
+              Total de asistencias por departamento
+            </CardTitle>
             <CardDescription>
-              Visualización geográfica de la asistencia por departamentos
+              Este grafico muestra la cantidad de productos entregados por
+              departamento en el rango de tiempo seleccionado
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-96 bg-muted rounded-lg flex items-center justify-center">
-              <p className="text-muted-foreground">
-                Aquí se mostrará el mapa interactivo de Paraguay
-              </p>
-            </div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              style={{
+                paddingLeft: 5,
+                paddingRight: 5,
+                width: "100%",
+              }}
+            >
+              <GraficoTotalAyudasPorDepartamento />
+            </motion.div>
+          </CardContent>
+        </Card>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-primary">
+                Localidades con mas eventos registrados
+              </CardTitle>
+              <CardDescription>
+                Grafico que indica la cantidad de eventos registrados en cada
+                localidad
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <GraficoTopLocalidades />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-info">
+                Evolucion de asistencias por año
+              </CardTitle>
+              <CardDescription>
+                Grafico que muestra los 5 departamentos mas asistidos por cada
+                año
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <GraficoEvolucionAyudasTopDepartamentos />
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-success">
+              Mapa de calor de departamentos por año
+            </CardTitle>
+            <CardDescription>
+              Mapa que muestra la cantidad de asistencias segun año y
+              departamento
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <HeatmapDepartamentoAnio />
           </CardContent>
         </Card>
 

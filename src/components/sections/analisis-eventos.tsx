@@ -11,6 +11,11 @@ import {
 import { Column, DataTable } from "../data-table";
 import { useGetPorEventoQuery, useEventosPorDepartamentoQuery } from "@/api";
 import { useState } from "react";
+import GraficoPieEventos from "../grafico-pie-eventos";
+import GraficoAyudasPorEvento from "../grafico-ayudas-por-evento";
+import GraficoComposicionAyudasPorEvento from "../grafico-composicion-ayudas-por-evento";
+import GraficoComparacionEventosAnio from "../grafico-comparacion-eventos-anio";
+import GraficoTendenciaMensualEventos from "../grafico-tendencia-mensual-eventos";
 
 function renderDetallesEvento(item: any) {
   return (
@@ -129,9 +134,9 @@ export function AnalisisEventos() {
   ) as { data: any | undefined };
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
       className="space-y-6"
     >
       <motion.div
@@ -160,15 +165,11 @@ export function AnalisisEventos() {
               Distribución por Tipo de Evento
             </CardTitle>
             <CardDescription>
-              Clasificación de emergencias atendidas
+              Cantidad de eventos registrados por tipo
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-80 bg-muted rounded-lg flex items-center justify-center">
-              <p className="text-muted-foreground">
-                Aquí se mostrará el gráfico de distribución por tipos de eventos
-              </p>
-            </div>
+            <GraficoPieEventos />
           </CardContent>
         </Card>
 
@@ -225,27 +226,60 @@ export function AnalisisEventos() {
         <div className="grid md:grid-cols-2 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-primary">Impacto por Evento</CardTitle>
+              <CardTitle className="text-primary">
+                Asistencias distribuidas segun Evento
+              </CardTitle>
               <CardDescription>
-                Beneficiarios por tipo de emergencia
+                Este grafico contiene la cantidad de asistencias (kits
+                sentencia, kits evento, chapas) distribuidas por tipo de evento
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-48 bg-muted rounded-lg flex items-center justify-center">
-                <p className="text-muted-foreground">Gráfico de impacto</p>
-              </div>
+              <GraficoAyudasPorEvento />
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-info">Duración Promedio</CardTitle>
-              <CardDescription>Tiempo de respuesta por tipo</CardDescription>
+              <CardTitle className="text-info">
+                Composición de Asistencias segun Evento
+              </CardTitle>
+              <CardDescription>
+                Grafico que muestra los detalles de los productos que se
+                distribuyeron para cada evento
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-48 bg-muted rounded-lg flex items-center justify-center">
-                <p className="text-muted-foreground">Gráfico de duración</p>
-              </div>
+              <GraficoComposicionAyudasPorEvento />
+            </CardContent>
+          </Card>
+        </div>
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-primary">
+                Comparacion de eventos por año
+              </CardTitle>
+              <CardDescription>
+                Este grafico contiene la cantidad de eventos registrados por año
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <GraficoComparacionEventosAnio />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-info">
+                Tendencia mensual de eventos
+              </CardTitle>
+              <CardDescription>
+                Grafico que muestra la tendencia mensual de eventos
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <GraficoTendenciaMensualEventos />
             </CardContent>
           </Card>
         </div>
