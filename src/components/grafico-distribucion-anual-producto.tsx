@@ -14,11 +14,20 @@ const productos = [
   { key: "carpas_plasticas", label: "Carpas plásticas" },
 ];
 
-export default function GraficoDistribucionAnualProducto() {
+export default function GraficoDistribucionAnualProducto({
+  fecha_inicio = "",
+  fecha_fin = "",
+}: {
+  fecha_inicio?: string;
+  fecha_fin?: string;
+}) {
   const [producto, setProducto] = useState(productos[0].key);
   const { data, isLoading, error } = useDistribucionAnualProductoQuery({
     producto,
     per_page: 100,
+    ...(fecha_inicio && fecha_fin
+      ? { fecha_desde: fecha_inicio, fecha_hasta: fecha_fin }
+      : {}),
   });
 
   if (isLoading) return <div>Cargando gráfico...</div>;

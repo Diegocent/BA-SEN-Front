@@ -2,11 +2,19 @@ import React from "react";
 import ReactECharts from "echarts-for-react";
 import { useAsistenciasPorAnioDepartamentoQuery } from "../api/geografica/geograficaApi";
 
-export default function GraficoEvolucionAyudasTopDepartamentos() {
-  // Puedes ajustar el número de departamentos top aquí
+export default function GraficoEvolucionAyudasTopDepartamentos({
+  fecha_inicio = "",
+  fecha_fin = "",
+}: {
+  fecha_inicio?: string;
+  fecha_fin?: string;
+}) {
   const TOP_N = 5;
   const { data, isLoading, isError } = useAsistenciasPorAnioDepartamentoQuery({
     per_page: 100,
+    ...(fecha_inicio && fecha_fin
+      ? { fecha_desde: fecha_inicio, fecha_hasta: fecha_fin }
+      : {}),
   });
 
   if (isLoading) return <div>Cargando gráfico...</div>;

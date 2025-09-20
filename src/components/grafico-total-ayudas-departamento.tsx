@@ -14,9 +14,18 @@ const tiposAyuda = [
   "carpas_plasticas_cantidad",
 ];
 
-export default function GraficoTotalAyudasPorDepartamento() {
+export default function GraficoTotalAyudasPorDepartamento({
+  fecha_inicio = "",
+  fecha_fin = "",
+}: {
+  fecha_inicio?: string;
+  fecha_fin?: string;
+}) {
   const { data, isLoading, isError } = useGetPorDepartamentoQuery({
     per_page: 50,
+    ...(fecha_inicio && fecha_fin
+      ? { fecha_desde: fecha_inicio, fecha_hasta: fecha_fin }
+      : {}),
   });
 
   if (isLoading) return <div>Cargando gráfico...</div>;

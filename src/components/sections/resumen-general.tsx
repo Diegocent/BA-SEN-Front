@@ -60,19 +60,29 @@ type ResumenGeneralData = {
 };
 
 export function ResumenGeneral() {
-  // Estado para filtros y página
+  // Estado para filtros, página y fechas globales
   const [filters, setFilters] = useState<Record<string, any>>({});
   const [pageUrl, setPageUrl] = useState<string | null>(null);
+  const [dateRange, setDateRange] = useState<{
+    startDate: string;
+    endDate: string;
+  }>({
+    startDate: "",
+    endDate: "",
+  });
 
-  // Construir parámetros para la consulta
-  // Eliminar cualquier 'page' de los filtros para evitar conflicto con la paginación
+  // Construir parámetros para la consulta, incluyendo el rango de fechas
   const { page, ...filtersWithoutPage } = filters;
   const pageParam = pageUrl
     ? { page: pageUrl.includes("page=") ? pageUrl.split("page=").pop() : "1" }
     : { page: "1" };
-  const queryParams = { ...filtersWithoutPage, ...pageParam };
+  const dateParams =
+    dateRange.startDate && dateRange.endDate
+      ? { fecha_desde: dateRange.startDate, fecha_hasta: dateRange.endDate }
+      : {};
+  const queryParams = { ...filtersWithoutPage, ...pageParam, ...dateParams };
 
-  // Consulta con filtros y página
+  // Consulta con filtros y página y fechas
   const {
     data: registrosRecientes,
     error: errorAsistencia,
@@ -83,7 +93,7 @@ export function ResumenGeneral() {
     isLoading: boolean;
   };
   // Hook de RTK Query para el endpoint resumen-general
-  const { data, error, isLoading } = useResumenGeneralQuery({}) as {
+  const { data, error, isLoading } = useResumenGeneralQuery(dateParams) as {
     data: ResumenGeneralData | undefined;
     error: any;
     isLoading: boolean;
@@ -162,6 +172,27 @@ export function ResumenGeneral() {
   );
   return (
     <div className="space-y-8">
+      {/* Filtro global de fechas */}
+      <div className="flex gap-4 items-center mb-4">
+        <label className="font-semibold">Rango de fechas:</label>
+        <input
+          type="date"
+          value={dateRange.startDate}
+          onChange={(e) =>
+            setDateRange((r) => ({ ...r, startDate: e.target.value }))
+          }
+          className="border rounded px-2 py-1"
+        />
+        <span className="mx-2">a</span>
+        <input
+          type="date"
+          value={dateRange.endDate}
+          onChange={(e) =>
+            setDateRange((r) => ({ ...r, endDate: e.target.value }))
+          }
+          className="border rounded px-2 py-1"
+        />
+      </div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -259,7 +290,10 @@ export function ResumenGeneral() {
               </Card>
             </motion.div>
           </div>
-          <MapaParaguay />
+          <MapaParaguay
+            fecha_inicio={dateRange.startDate}
+            fecha_fin={dateRange.endDate}
+          />
 
           <Card>
             <CardHeader>
@@ -281,7 +315,10 @@ export function ResumenGeneral() {
                   width: "100%",
                 }}
               >
-                <GraficoPieEventos />
+                <GraficoPieEventos
+                  fecha_inicio={dateRange.startDate}
+                  fecha_fin={dateRange.endDate}
+                />
               </motion.div>
             </CardContent>
           </Card>
@@ -298,7 +335,10 @@ export function ResumenGeneral() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <GraficoDistribucionAyudasPorAnio />
+                <GraficoDistribucionAyudasPorAnio
+                  fecha_inicio={dateRange.startDate}
+                  fecha_fin={dateRange.endDate}
+                />
               </CardContent>
             </Card>
 
@@ -313,7 +353,10 @@ export function ResumenGeneral() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <GraficoDistribucionAyudasPorDepartamento />
+                <GraficoDistribucionAyudasPorDepartamento
+                  fecha_inicio={dateRange.startDate}
+                  fecha_fin={dateRange.endDate}
+                />
               </CardContent>
             </Card>
           </div>
@@ -328,7 +371,10 @@ export function ResumenGeneral() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <GraficoTendenciaMensual />
+              <GraficoTendenciaMensual
+                fecha_inicio={dateRange.startDate}
+                fecha_fin={dateRange.endDate}
+              />
             </CardContent>
           </Card>
 

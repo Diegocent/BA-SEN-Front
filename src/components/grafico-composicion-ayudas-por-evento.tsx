@@ -2,9 +2,18 @@ import React from "react";
 import ReactECharts from "echarts-for-react";
 import { useComposicionAyudasPorEventoQuery } from "@/api";
 
-export default function GraficoComposicionAyudasPorEvento() {
+export default function GraficoComposicionAyudasPorEvento({
+  fecha_inicio = "",
+  fecha_fin = "",
+}: {
+  fecha_inicio?: string;
+  fecha_fin?: string;
+}) {
   const { data, isLoading, isError } = useComposicionAyudasPorEventoQuery({
     per_page: 100,
+    ...(fecha_inicio && fecha_fin
+      ? { fecha_desde: fecha_inicio, fecha_hasta: fecha_fin }
+      : {}),
   });
 
   if (isLoading) return <div>Cargando gráfico...</div>;

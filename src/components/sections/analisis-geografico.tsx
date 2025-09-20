@@ -14,6 +14,12 @@ import GraficoEvolucionAyudasTopDepartamentos from "../grafico-evolucion-ayudas-
 import HeatmapDepartamentoAnio from "../heatmap-departamento-anio";
 import { useState } from "react";
 export function AnalisisGeografico() {
+  // Filtro global de fechas
+  const [dateRange, setDateRange] = useState<{
+    startDate: string;
+    endDate: string;
+  }>({ startDate: "", endDate: "" });
+
   // Estado para filtros y página para departamentos
   const [filtersDepto, setFiltersDepto] = useState<Record<string, any>>({});
   const [pageUrlDepto, setPageUrlDepto] = useState<string | null>(null);
@@ -25,7 +31,15 @@ export function AnalisisGeografico() {
           : "1",
       }
     : { page: "1" };
-  const queryParamsDepto = { ...filtersDeptoWithoutPage, ...pageParamDepto };
+  const dateParams =
+    dateRange.startDate && dateRange.endDate
+      ? { fecha_desde: dateRange.startDate, fecha_hasta: dateRange.endDate }
+      : {};
+  const queryParamsDepto = {
+    ...filtersDeptoWithoutPage,
+    ...pageParamDepto,
+    ...dateParams,
+  };
 
   // Estado para filtros y página para distritos
   const [filtersDistrito, setFiltersDistrito] = useState<Record<string, any>>(
@@ -43,6 +57,7 @@ export function AnalisisGeografico() {
   const queryParamsDistrito = {
     ...filtersDistritoWithoutPage,
     ...pageParamDistrito,
+    ...dateParams,
   };
   const columnasDepartamentos = [
     { key: "departamento", label: "Departamento" },
@@ -86,6 +101,27 @@ export function AnalisisGeografico() {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
+      {/* Filtro global de fechas */}
+      <div className="flex gap-4 items-center mb-4">
+        <label className="font-semibold">Rango de fechas:</label>
+        <input
+          type="date"
+          value={dateRange.startDate}
+          onChange={(e) =>
+            setDateRange((r) => ({ ...r, startDate: e.target.value }))
+          }
+          className="border rounded px-2 py-1"
+        />
+        <span className="mx-2">a</span>
+        <input
+          type="date"
+          value={dateRange.endDate}
+          onChange={(e) =>
+            setDateRange((r) => ({ ...r, endDate: e.target.value }))
+          }
+          className="border rounded px-2 py-1"
+        />
+      </div>
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -127,7 +163,10 @@ export function AnalisisGeografico() {
                 width: "100%",
               }}
             >
-              <GraficoTotalAyudasPorDepartamento />
+              <GraficoTotalAyudasPorDepartamento
+                fecha_inicio={dateRange.startDate}
+                fecha_fin={dateRange.endDate}
+              />
             </motion.div>
           </CardContent>
         </Card>
@@ -144,7 +183,10 @@ export function AnalisisGeografico() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <GraficoTopLocalidades />
+              <GraficoTopLocalidades
+                fecha_inicio={dateRange.startDate}
+                fecha_fin={dateRange.endDate}
+              />
             </CardContent>
           </Card>
 
@@ -159,7 +201,10 @@ export function AnalisisGeografico() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <GraficoEvolucionAyudasTopDepartamentos />
+              <GraficoEvolucionAyudasTopDepartamentos
+                fecha_inicio={dateRange.startDate}
+                fecha_fin={dateRange.endDate}
+              />
             </CardContent>
           </Card>
         </div>
@@ -175,7 +220,10 @@ export function AnalisisGeografico() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <HeatmapDepartamentoAnio />
+            <HeatmapDepartamentoAnio
+              fecha_inicio={dateRange.startDate}
+              fecha_fin={dateRange.endDate}
+            />
           </CardContent>
         </Card>
 

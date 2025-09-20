@@ -2,9 +2,18 @@ import React from "react";
 import ReactECharts from "echarts-for-react";
 import { useAsistenciasPorAnioDepartamentoQuery } from "../api/geografica/geograficaApi";
 
-export default function HeatmapDepartamentoAnio() {
+export default function HeatmapDepartamentoAnio({
+  fecha_inicio = "",
+  fecha_fin = "",
+}: {
+  fecha_inicio?: string;
+  fecha_fin?: string;
+}) {
   const { data, isLoading, isError } = useAsistenciasPorAnioDepartamentoQuery({
     per_page: 100,
+    ...(fecha_inicio && fecha_fin
+      ? { fecha_desde: fecha_inicio, fecha_hasta: fecha_fin }
+      : {}),
   });
 
   if (isLoading) return <div>Cargando heatmap...</div>;

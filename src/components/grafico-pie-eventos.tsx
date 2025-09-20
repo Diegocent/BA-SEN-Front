@@ -2,8 +2,17 @@ import React from "react";
 import ReactECharts from "echarts-for-react";
 import { useGetPorEventoQuery } from "../api/eventos/eventosApi";
 
-export default function GraficoPieEventos() {
-  const { data, isLoading, isError } = useGetPorEventoQuery({ per_page: 100 });
+interface Props {
+  fecha_inicio?: string;
+  fecha_fin?: string;
+}
+
+export default function GraficoPieEventos({ fecha_inicio, fecha_fin }: Props) {
+  const { data, isLoading, isError } = useGetPorEventoQuery({
+    per_page: 100,
+    fecha_desde: fecha_inicio,
+    fecha_hasta: fecha_fin,
+  });
 
   if (isLoading) return <div>Cargando gráfico...</div>;
   if (isError || !data) return <div>Error al cargar los datos.</div>;
