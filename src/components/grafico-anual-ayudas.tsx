@@ -2,8 +2,19 @@ import React from "react";
 import ReactECharts from "echarts-for-react";
 import { useGetAnualQuery } from "@/api";
 
-export default function GraficoAnualAyudas() {
-  const { data, isLoading, error } = useGetAnualQuery({ per_page: 100 });
+export default function GraficoAnualAyudas({
+  fecha_inicio = "",
+  fecha_fin = "",
+}: {
+  fecha_inicio?: string;
+  fecha_fin?: string;
+}) {
+  const { data, isLoading, error } = useGetAnualQuery({
+    per_page: 100,
+    ...(fecha_inicio && fecha_fin
+      ? { fecha_desde: fecha_inicio, fecha_hasta: fecha_fin }
+      : {}),
+  });
 
   if (isLoading) return <div>Cargando gráfico...</div>;
   if (error) return <div>Error al cargar datos</div>;
@@ -31,13 +42,13 @@ export default function GraficoAnualAyudas() {
     stack: "total",
     emphasis: { focus: "series" },
     data: results.map((item: any) => item[tipo.key] || 0),
-    label: { show: true, position: "inside", fontSize: 10 },
+    label: { show: false, position: "inside", fontSize: 10 },
   }));
 
   const option = {
     tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
-    legend: { top: 10 },
-    grid: { left: 40, right: 20, bottom: 50, top: 50, containLabel: true },
+    legend: { bottom: 10 },
+    grid: { left: 40, right: 20, bottom: 50, top: 10, containLabel: true },
     xAxis: {
       type: "category",
       data: anios,
@@ -56,9 +67,6 @@ export default function GraficoAnualAyudas() {
 
   return (
     <div style={{ background: "#fff", borderRadius: 8, padding: 8 }}>
-      <h3 style={{ marginBottom: 8 }}>
-        Ayudas anuales por tipo (barras apiladas)
-      </h3>
       <ReactECharts option={option} style={{ height: 320 }} />
     </div>
   );

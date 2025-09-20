@@ -2,9 +2,18 @@ import React from "react";
 import ReactECharts from "echarts-for-react";
 import { useOcurrenciasEventoAnualQuery } from "@/api";
 
-export default function GraficoComparacionEventosAnio() {
+export default function GraficoComparacionEventosAnio({
+  fecha_inicio = "",
+  fecha_fin = "",
+}: {
+  fecha_inicio?: string;
+  fecha_fin?: string;
+}) {
   const { data, isLoading, isError } = useOcurrenciasEventoAnualQuery({
     per_page: 100,
+    ...(fecha_inicio && fecha_fin
+      ? { fecha_desde: fecha_inicio, fecha_hasta: fecha_fin }
+      : {}),
   });
 
   if (isLoading) return <div>Cargando gráfico...</div>;

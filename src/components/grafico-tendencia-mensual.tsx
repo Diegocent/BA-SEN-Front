@@ -2,9 +2,19 @@ import React from "react";
 import ReactECharts from "echarts-for-react";
 import { useTendenciaMensualAsistenciasQuery } from "../api/temporal/temporalApi";
 
-export default function GraficoTendenciaMensual() {
+interface Props {
+  fecha_inicio?: string;
+  fecha_fin?: string;
+}
+
+export default function GraficoTendenciaMensual({
+  fecha_inicio,
+  fecha_fin,
+}: Props) {
   const { data, isLoading, isError } = useTendenciaMensualAsistenciasQuery({
     per_page: 100,
+    fecha_desde: fecha_inicio,
+    fecha_hasta: fecha_fin,
   });
 
   if (isLoading) return <div>Cargando gráfico...</div>;

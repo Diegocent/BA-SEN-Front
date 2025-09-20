@@ -15,11 +15,20 @@ const eventos = [
   "OLLA POPULAR",
 ];
 
-export default function GraficoTendenciaMensualEventos() {
+export default function GraficoTendenciaMensualEventos({
+  fecha_inicio = "",
+  fecha_fin = "",
+}: {
+  fecha_inicio?: string;
+  fecha_fin?: string;
+}) {
   const [evento, setEvento] = useState(eventos[0]);
   const { data, isLoading, isError } = useTendenciaMensualAsistenciasQuery({
     per_page: 100,
     evento,
+    ...(fecha_inicio && fecha_fin
+      ? { fecha_desde: fecha_inicio, fecha_hasta: fecha_fin }
+      : {}),
   });
 
   if (isLoading) return <div>Cargando gráfico...</div>;

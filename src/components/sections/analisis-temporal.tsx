@@ -14,6 +14,12 @@ import GraficoDistribucionAnualProducto from "../grafico-distribucion-anual-prod
 import GraficoTendenciaMensual from "../grafico-tendencia-mensual";
 import { useState } from "react";
 export function AnalisisTemporal() {
+  // Filtro global de fechas
+  const [dateRange, setDateRange] = useState<{
+    startDate: string;
+    endDate: string;
+  }>({ startDate: "", endDate: "" });
+
   // Estado para filtros y página para anual
   const [filtersAnual, setFiltersAnual] = useState<Record<string, any>>({});
   const [pageUrlAnual, setPageUrlAnual] = useState<string | null>(null);
@@ -25,7 +31,15 @@ export function AnalisisTemporal() {
           : "1",
       }
     : { page: "1" };
-  const queryParamsAnual = { ...filtersAnualWithoutPage, ...pageParamAnual };
+  const dateParams =
+    dateRange.startDate && dateRange.endDate
+      ? { fecha_desde: dateRange.startDate, fecha_hasta: dateRange.endDate }
+      : {};
+  const queryParamsAnual = {
+    ...filtersAnualWithoutPage,
+    ...pageParamAnual,
+    ...dateParams,
+  };
 
   // Estado para filtros y página para mensual
   const [filtersMensual, setFiltersMensual] = useState<Record<string, any>>({});
@@ -41,6 +55,7 @@ export function AnalisisTemporal() {
   const queryParamsMensual = {
     ...filtersMensualWithoutPage,
     ...pageParamMensual,
+    ...dateParams,
   };
 
   const columnasAnual = [
@@ -87,6 +102,27 @@ export function AnalisisTemporal() {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
+      {/* Filtro global de fechas */}
+      <div className="flex gap-4 items-center mb-4">
+        <label className="font-semibold">Rango de fechas:</label>
+        <input
+          type="date"
+          value={dateRange.startDate}
+          onChange={(e) =>
+            setDateRange((r) => ({ ...r, startDate: e.target.value }))
+          }
+          className="border rounded px-2 py-1"
+        />
+        <span className="mx-2">a</span>
+        <input
+          type="date"
+          value={dateRange.endDate}
+          onChange={(e) =>
+            setDateRange((r) => ({ ...r, endDate: e.target.value }))
+          }
+          className="border rounded px-2 py-1"
+        />
+      </div>
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -127,7 +163,10 @@ export function AnalisisTemporal() {
                 width: "100%",
               }}
             >
-              <GraficoTendenciaMensual />
+              <GraficoTendenciaMensual
+                fecha_inicio={dateRange.startDate}
+                fecha_fin={dateRange.endDate}
+              />
             </motion.div>
           </CardContent>
         </Card>
@@ -139,7 +178,10 @@ export function AnalisisTemporal() {
               <CardDescription>Distribución anual de eventos</CardDescription>
             </CardHeader>
             <CardContent>
-              <GraficoAnualAyudas />
+              <GraficoAnualAyudas
+                fecha_inicio={dateRange.startDate}
+                fecha_fin={dateRange.endDate}
+              />
             </CardContent>
           </Card>
 
@@ -149,7 +191,10 @@ export function AnalisisTemporal() {
               <CardDescription>Patrones estacionales</CardDescription>
             </CardHeader>
             <CardContent>
-              <GraficoMensual />
+              <GraficoMensual
+                fecha_inicio={dateRange.startDate}
+                fecha_fin={dateRange.endDate}
+              />
             </CardContent>
           </Card>
         </div>
@@ -164,7 +209,10 @@ export function AnalisisTemporal() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <GraficoDistribucionAnualProducto />
+            <GraficoDistribucionAnualProducto
+              fecha_inicio={dateRange.startDate}
+              fecha_fin={dateRange.endDate}
+            />
           </CardContent>
         </Card>
 

@@ -26,8 +26,19 @@ const ayudaLabels: Record<string, string> = {
   carpas_plasticas_cantidad: "Carpas Plásticas",
 };
 
-export default function GraficoDistribucionAyudasPorAnio() {
-  const { data, isLoading, isError } = useGetAnualQuery({});
+interface Props {
+  fecha_inicio?: string;
+  fecha_fin?: string;
+}
+
+export default function GraficoDistribucionAyudasPorAnio({
+  fecha_inicio,
+  fecha_fin,
+}: Props) {
+  const { data, isLoading, isError } = useGetAnualQuery({
+    fecha_desde: fecha_inicio,
+    fecha_hasta: fecha_fin,
+  });
 
   if (isLoading) return <div>Cargando gráfico...</div>;
   if (isError || !data) return <div>Error al cargar los datos.</div>;

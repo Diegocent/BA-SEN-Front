@@ -25,9 +25,15 @@ interface DepartamentoData {
 
 interface MapaParaguayProps {
   className?: string;
+  fecha_inicio?: string;
+  fecha_fin?: string;
 }
 
-export function MapaParaguay({ className }: MapaParaguayProps) {
+export function MapaParaguay({
+  className,
+  fecha_inicio,
+  fecha_fin,
+}: MapaParaguayProps) {
   // Estado para el departamento seleccionado (solo info geográfica)
   const [selectedDepartamento, setSelectedDepartamento] =
     useState<DepartamentoData | null>(null);
@@ -228,7 +234,10 @@ export function MapaParaguay({ className }: MapaParaguayProps) {
     data: resumenData,
     isLoading,
     error,
-  } = useResumenPorDepartamentoQuery({});
+  } = useResumenPorDepartamentoQuery({
+    fecha_desde: fecha_inicio,
+    fecha_hasta: fecha_fin,
+  });
 
   // Merge: para cada departamento mock, si hay datos reales, los sobreescribe
   const departamentosData: DepartamentoData[] = departamentosMock.map(

@@ -2,11 +2,20 @@ import React from "react";
 import ReactECharts from "echarts-for-react";
 import { useEventosPorLocalidadQuery } from "../api/geografica/geograficaApi";
 
-export default function GraficoTopLocalidades() {
-  // Puedes ajustar el número de localidades top aquí
-  const TOP_N = 10;
+export default function GraficoTopLocalidades({
+  fecha_inicio = "",
+  fecha_fin = "",
+}: {
+  fecha_inicio?: string;
+  fecha_fin?: string;
+}) {
+  // Solo mostrar el top 5 en el frontend
+  const TOP_N = 5;
   const { data, isLoading, isError } = useEventosPorLocalidadQuery({
     per_page: 50,
+    ...(fecha_inicio && fecha_fin
+      ? { fecha_desde: fecha_inicio, fecha_hasta: fecha_fin }
+      : {}),
   });
 
   if (isLoading) return <div>Cargando gráfico...</div>;
