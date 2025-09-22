@@ -10,7 +10,9 @@ import {
 } from "../ui/card";
 import { Column, DataTable } from "../data-table";
 import { useGetPorEventoQuery, useEventosPorDepartamentoQuery } from "@/api";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { generateTablePDF } from "@/lib/pdfUtils";
+import { ObtenerTotalData } from "@/hooks/obtenerTotalData";
 import GraficoPieEventos from "../grafico-pie-eventos";
 import GraficoAyudasPorEvento from "../grafico-ayudas-por-evento";
 import GraficoComposicionAyudasPorEvento from "../grafico-composicion-ayudas-por-evento";
@@ -48,11 +50,6 @@ function renderDetallesEvento(item: any) {
 }
 
 export function AnalisisEventos() {
-  // Filtro global de fechas
-  const [dateRange, setDateRange] = useState<{
-    startDate: string;
-    endDate: string;
-  }>({ startDate: "", endDate: "" });
   // Columnas
   const columnasTipoEventos: Column[] = [
     {
@@ -104,6 +101,12 @@ export function AnalisisEventos() {
     { key: "chapas", label: "Chapas", dataType: "number", filterType: "text" },
   ];
 
+  // Filtro global de fechas
+  const [dateRange, setDateRange] = useState<{
+    startDate: string;
+    endDate: string;
+  }>({ startDate: "", endDate: "" });
+
   // Estado y lógica para filtros y paginación por tipo de evento
   const [filtersEvento, setFiltersEvento] = useState<Record<string, any>>({});
   const [pageUrlEvento, setPageUrlEvento] = useState<string | null>(null);
@@ -136,6 +139,46 @@ export function AnalisisEventos() {
           : "1",
       }
     : { page: "1" };
+
+  // PDF params y handlers para EVENTOS
+  const [pdfParamEvento, setPdfParamEvento] = useState({});
+  useEffect(() => {
+    setPdfParamEvento({ ...filtersEventoWithoutPage, ...dateParams });
+  }, [filtersEvento, dateRange]);
+
+  const handleImprimirPDFEvento = async () => {
+    const registrosTotales = await ObtenerTotalData(
+      "",
+      "por-evento",
+      pdfParamEvento,
+      dataEventos?.count || 10
+    );
+    generateTablePDF({
+      columns: columnasTipoEventos,
+      data: registrosTotales?.results || [],
+      title: "Eventos por Tipo",
+    });
+  };
+
+  // PDF params y handlers para EVENTOS POR DEPARTAMENTO
+  const [pdfParamDepto, setPdfParamDepto] = useState({});
+  useEffect(() => {
+    setPdfParamDepto({ ...filtersDeptoWithoutPage, ...dateParams });
+  }, [filtersDepto, dateRange]);
+
+  const handleImprimirPDFDepto = async () => {
+    const registrosTotales = await ObtenerTotalData(
+      "",
+      "eventos-por-departamento",
+      pdfParamDepto,
+      dataPorDepartamento?.count || 10
+    );
+    generateTablePDF({
+      columns: columnasEventosDepartamento,
+      data: registrosTotales?.results || [],
+      title: "Eventos por Departamento",
+    });
+  };
   const queryParamsDepto = {
     ...filtersDeptoWithoutPage,
     ...pageParamDepto,
@@ -337,16 +380,12 @@ export function AnalisisEventos() {
           </Card>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-primary">
-              Resumen por Tipo de Eventos
-            </CardTitle>
-            <CardDescription>
-              Datos consolidados de asistencia humanitaria por tipo de evento
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <div className="overflow-x-auto w-full">
             <DataTable
               data={
                 dataEventos || {
@@ -359,26 +398,24 @@ export function AnalisisEventos() {
               }
               columns={columnasTipoEventos}
               searchPlaceHolder="Buscar tipo de evento..."
-              title={""}
+              title="Resumen por Tipo de Eventos"
+              subtitle="Datos consolidados de asistencia humanitaria por tipo de evento"
               onViewDetails={renderDetallesEvento}
               itemsPerPage={10}
               onPageChange={setPageUrlEvento}
               filters={filtersEvento}
               setFilters={setFiltersEvento}
+              handleImprimir={handleImprimirPDFEvento}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </motion.div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-info">
-              Eventos por Departamento
-            </CardTitle>
-            <CardDescription>
-              Distribución de eventos de emergencia por departamento
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <div className="overflow-x-auto w-full">
             <DataTable
               data={
                 dataPorDepartamento || {
@@ -391,15 +428,17 @@ export function AnalisisEventos() {
               }
               columns={columnasEventosDepartamento}
               searchPlaceHolder="Buscar departamento..."
-              title={""}
+              title="Eventos por Departamento"
+              subtitle="Distribución de eventos de emergencia por departamento"
               onViewDetails={renderDetallesEvento}
               itemsPerPage={10}
               onPageChange={setPageUrlDepto}
               filters={filtersDepto}
               setFilters={setFiltersDepto}
+              handleImprimir={handleImprimirPDFDepto}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </motion.div>
       </motion.div>
     </motion.div>
   );

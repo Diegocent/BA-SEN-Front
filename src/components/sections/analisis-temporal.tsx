@@ -6,13 +6,15 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { DataTable } from "../data-table";
+import { Column, DataTable } from "../data-table";
 import { useGetAnualQuery, useGetMensualQuery } from "@/api";
 import GraficoMensual from "../grafico-mensual-ayudas";
 import GraficoAnualAyudas from "../grafico-anual-ayudas";
 import GraficoDistribucionAnualProducto from "../grafico-distribucion-anual-producto";
 import GraficoTendenciaMensual from "../grafico-tendencia-mensual";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { generateTablePDF } from "@/lib/pdfUtils";
+import { ObtenerTotalData } from "@/hooks/obtenerTotalData";
 export function AnalisisTemporal() {
   // Filtro global de fechas
   const [dateRange, setDateRange] = useState<{
@@ -58,19 +60,79 @@ export function AnalisisTemporal() {
     ...dateParams,
   };
 
-  const columnasAnual = [
-    { key: "anio", label: "Año" },
-    { key: "kit_sentencia", label: "Kits por sentencia de la corte" },
-    { key: "kit_evento", label: "Kits de asistencia por eventos adversos" },
-    { key: "chapas", label: "Chapas" },
+  // PDF params y handlers para ANUAL
+  const [pdfParamAnual, setPdfParamAnual] = useState({});
+  useEffect(() => {
+    setPdfParamAnual({ ...filtersAnualWithoutPage, ...dateParams });
+  }, [filtersAnual, dateRange]);
+
+  const handleImprimirPDFAnual = async () => {
+    const registrosTotales = await ObtenerTotalData(
+      "",
+      "anual",
+      pdfParamAnual,
+      dataAnual?.count || 10
+    );
+    generateTablePDF({
+      columns: columnasAnual,
+      data: registrosTotales?.results || [],
+      title: "Resumen Anual",
+    });
+  };
+
+  // PDF params y handlers para MENSUAL
+  const [pdfParamMensual, setPdfParamMensual] = useState({});
+  useEffect(() => {
+    setPdfParamMensual({ ...filtersMensualWithoutPage, ...dateParams });
+  }, [filtersMensual, dateRange]);
+
+  const handleImprimirPDFMensual = async () => {
+    const registrosTotales = await ObtenerTotalData(
+      "",
+      "mensual",
+      pdfParamMensual,
+      dataMensual?.count || 10
+    );
+    generateTablePDF({
+      columns: columnasMensual,
+      data: registrosTotales?.results || [],
+      title: "Detalle Mensual",
+    });
+  };
+
+  const columnasAnual: Column[] = [
+    { key: "anio", label: "Año", dataType: "text", filterType: "text" },
+    {
+      key: "kit_sentencia",
+      label: "Kits por sentencia de la corte",
+      dataType: "number",
+      filterType: "text",
+    },
+    {
+      key: "kit_evento",
+      label: "Kits de asistencia por eventos adversos",
+      dataType: "number",
+      filterType: "text",
+    },
+    { key: "chapas", label: "Chapas", dataType: "number", filterType: "text" },
   ];
 
-  const columnasMensual = [
-    { key: "anio", label: "Año" },
-    { key: "nombre_mes", label: "Mes" },
-    { key: "kit_sentencia", label: "Kits por sentencia de la corte" },
-    { key: "kit_evento", label: "Kits de asistencia por eventos adversos" },
-    { key: "chapas", label: "Chapas" },
+  const columnasMensual: Column[] = [
+    { key: "anio", label: "Año", dataType: "text", filterType: "text" },
+    { key: "nombre_mes", label: "Mes", dataType: "text", filterType: "text" },
+    {
+      key: "kit_sentencia",
+      label: "Kits por sentencia de la corte",
+      dataType: "number",
+      filterType: "text",
+    },
+    {
+      key: "kit_evento",
+      label: "Kits de asistencia por eventos adversos",
+      dataType: "number",
+      filterType: "text",
+    },
+    { key: "chapas", label: "Chapas", dataType: "number", filterType: "text" },
   ];
 
   // Paginación para anual
@@ -262,14 +324,12 @@ export function AnalisisTemporal() {
           </Card>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-primary">Resumen Anual</CardTitle>
-            <CardDescription>
-              Datos consolidados de asistencia humanitaria por año
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <div className="overflow-x-auto w-full">
             <DataTable
               data={
                 dataAnual || {
@@ -282,24 +342,24 @@ export function AnalisisTemporal() {
               }
               columns={columnasAnual}
               searchPlaceHolder="Buscar año..."
-              title={""}
+              title="Resumen Anual"
+              subtitle="Datos consolidados de asistencia humanitaria por año"
               onViewDetails={() => null}
               itemsPerPage={10}
               onPageChange={setPageUrlAnual}
               filters={filtersAnual}
               setFilters={setFiltersAnual}
+              handleImprimir={handleImprimirPDFAnual}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </motion.div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-info">Detalle Mensual</CardTitle>
-            <CardDescription>
-              Datos detallados de asistencia humanitaria por mes
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <div className="overflow-x-auto w-full">
             <DataTable
               data={
                 dataMensual || {
@@ -312,15 +372,17 @@ export function AnalisisTemporal() {
               }
               columns={columnasMensual}
               searchPlaceHolder="Buscar mes..."
-              title={""}
+              title="Detalle Mensual"
+              subtitle="Datos detallados de asistencia humanitaria por mes"
               onViewDetails={() => null}
               itemsPerPage={10}
               onPageChange={setPageUrlMensual}
               filters={filtersMensual}
               setFilters={setFiltersMensual}
+              handleImprimir={handleImprimirPDFMensual}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </motion.div>
       </motion.div>
     </motion.div>
   );

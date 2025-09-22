@@ -12,7 +12,9 @@ import GraficoTotalAyudasPorDepartamento from "../grafico-total-ayudas-departame
 import GraficoTopLocalidades from "../grafico-top-localidades";
 import GraficoEvolucionAyudasTopDepartamentos from "../grafico-evolucion-ayudas-top-departamentos";
 import HeatmapDepartamentoAnio from "../heatmap-departamento-anio";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { generateTablePDF } from "@/lib/pdfUtils";
+import { ObtenerTotalData } from "@/hooks/obtenerTotalData";
 export function AnalisisGeografico() {
   // Filtro global de fechas
   const [dateRange, setDateRange] = useState<{
@@ -58,6 +60,45 @@ export function AnalisisGeografico() {
     ...filtersDistritoWithoutPage,
     ...pageParamDistrito,
     ...dateParams,
+  };
+  // PDF params y handlers para DEPARTAMENTOS
+  const [pdfParamDepto, setPdfParamDepto] = useState({});
+  useEffect(() => {
+    setPdfParamDepto({ ...filtersDeptoWithoutPage, ...dateParams });
+  }, [filtersDepto, dateRange]);
+
+  const handleImprimirPDFDepto = async () => {
+    const registrosTotales = await ObtenerTotalData(
+      "",
+      "por-departamento",
+      pdfParamDepto,
+      dataDepartamento?.count || 10
+    );
+    generateTablePDF({
+      columns: columnasDepartamentos,
+      data: registrosTotales?.results || [],
+      title: "Resumen por Departamento",
+    });
+  };
+
+  // PDF params y handlers para DISTRITOS
+  const [pdfParamDistrito, setPdfParamDistrito] = useState({});
+  useEffect(() => {
+    setPdfParamDistrito({ ...filtersDistritoWithoutPage, ...dateParams });
+  }, [filtersDistrito, dateRange]);
+
+  const handleImprimirPDFDistrito = async () => {
+    const registrosTotales = await ObtenerTotalData(
+      "",
+      "por-ubicacion",
+      pdfParamDistrito,
+      dataDistrito?.count || 10
+    );
+    generateTablePDF({
+      columns: columnasDistritos,
+      data: registrosTotales?.results || [],
+      title: "Resumen por Distrito",
+    });
   };
   const columnasDepartamentos = [
     { key: "departamento", label: "Departamento" },
@@ -267,16 +308,12 @@ export function AnalisisGeografico() {
           </Card>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-primary">
-              Resumen por Departamento
-            </CardTitle>
-            <CardDescription>
-              Datos consolidados de asistencia humanitaria por departamento
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <div className="overflow-x-auto w-full">
             <DataTable
               data={
                 dataDepartamento || {
@@ -289,24 +326,24 @@ export function AnalisisGeografico() {
               }
               columns={columnasDepartamentos}
               searchPlaceHolder="Buscar departamento..."
-              title={""}
+              title="Resumen por Departamento"
+              subtitle="Datos consolidados de asistencia humanitaria por departamento"
               onViewDetails={() => null}
               itemsPerPage={10}
               onPageChange={setPageUrlDepto}
               filters={filtersDepto}
               setFilters={setFiltersDepto}
+              handleImprimir={handleImprimirPDFDepto}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </motion.div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-info">Resumen por Distrito</CardTitle>
-            <CardDescription>
-              Datos detallados de asistencia humanitaria por distrito
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <div className="overflow-x-auto w-full">
             <DataTable
               data={
                 dataDistrito || {
@@ -319,15 +356,17 @@ export function AnalisisGeografico() {
               }
               columns={columnasDistritos}
               searchPlaceHolder="Buscar distrito..."
-              title={""}
+              title="Resumen por Distrito"
+              subtitle="Datos detallados de asistencia humanitaria por distrito"
               onViewDetails={() => null}
               itemsPerPage={10}
               onPageChange={setPageUrlDistrito}
               filters={filtersDistrito}
               setFilters={setFiltersDistrito}
+              handleImprimir={handleImprimirPDFDistrito}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </motion.div>
       </motion.div>
     </motion.div>
   );

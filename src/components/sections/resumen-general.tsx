@@ -11,11 +11,12 @@ import { MapaParaguay } from "../mapa-paraguay";
 import { Column, DataTable } from "../data-table";
 import { useResumenGeneralQuery, useAsistenciaDetalladaQuery } from "../../api";
 import { useEffect, useState } from "react";
-import { data } from "framer-motion/client";
 import GraficoDistribucionAyudasPorAnio from "../grafico-distribucion-ayudas-anio";
 import GraficoDistribucionAyudasPorDepartamento from "../grafico-distribucion-ayudas-departamento";
 import GraficoPieEventos from "../grafico-pie-eventos";
 import GraficoTendenciaMensual from "../grafico-tendencia-mensual";
+import { generateTablePDF } from "@/lib/pdfUtils";
+import { ObtenerTotalData } from "@/hooks/obtenerTotalData";
 
 const columnasRegistros: Column[] = [
   { key: "fecha", label: "Fecha", dataType: "date", filterType: "date" },
@@ -81,6 +82,15 @@ export function ResumenGeneral() {
       ? { fecha_desde: dateRange.startDate, fecha_hasta: dateRange.endDate }
       : {};
   const queryParams = { ...filtersWithoutPage, ...pageParam, ...dateParams };
+  const [pdfParam, setPdfParam] = useState({});
+
+  useEffect(() => {
+    if (filtersWithoutPage && dateRange.startDate && dateRange.endDate) {
+      setPdfParam({ ...filtersWithoutPage, ...dateParams });
+    } else {
+      setPdfParam({});
+    }
+  }, [filters, dateRange]);
 
   // Consulta con filtros y página y fechas
   const {
@@ -103,6 +113,22 @@ export function ResumenGeneral() {
     cantidad_kit_evento: 0,
     cantidad_registros_total: 0,
   });
+
+  const handleImprimirPDF = async () => {
+    // primero obtenemos los registros totales con los filtros actuales
+    const registrosTotales = await ObtenerTotalData(
+      "",
+      "detallada",
+      pdfParam,
+      registrosRecientes?.count || 10 // Suponiendo que no habrá más de 1000 registros para exportar
+    );
+    // Llamar a la función para generar el PDF, pasando los parámetros actuales
+    generateTablePDF({
+      columns: columnasRegistros,
+      data: registrosTotales?.results || [],
+      title: "Resumen General",
+    });
+  };
 
   useEffect(() => {
     if (data) {
@@ -386,6 +412,7 @@ export function ResumenGeneral() {
             <div className="overflow-x-auto w-full">
               <DataTable
                 title="Registros Recientes"
+                subtitle="Lista de los registros de asistencia más recientes"
                 data={
                   registrosRecientes || {
                     count: 0,
@@ -400,6 +427,7 @@ export function ResumenGeneral() {
                 onPageChange={setPageUrl}
                 filters={filters}
                 setFilters={setFilters}
+                handleImprimir={handleImprimirPDF}
               />
             </div>
           </motion.div>
