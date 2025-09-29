@@ -1,5 +1,3 @@
-import { data } from "framer-motion/client";
-
 export const formatCell = (value: any, dataType?: string) => {
   // Si es null/undefined, mostrar vacío
   if (value === null || value === undefined) return "";

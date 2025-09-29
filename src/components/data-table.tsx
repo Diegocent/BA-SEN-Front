@@ -31,7 +31,7 @@ export interface DataTableProps {
 import type React from "react";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Eye, ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { Eye, ChevronLeft, ChevronRight, Search, FileText } from "lucide-react";
 import { Filter } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -167,9 +167,10 @@ export function DataTable(props: DataTableProps) {
                 variant="primary"
                 size="default"
                 onClick={handleImprimir}
-                className="ml-2"
+                className="ml-2 bg-primary hover:bg-primary-dark"
                 title="Imprimir PDF"
               >
+                <FileText />
                 <span className="text-white font-semibold">Imprimir PDF</span>
               </Button>
             )}

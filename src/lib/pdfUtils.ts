@@ -16,26 +16,6 @@ export function generateTablePDF({
   doc.text(title, 14, 18);
 
   const tableColumns = columns.map((col) => col.label);
-  // Formatear fechas en formato dd/mm/yyyy si la columna es tipo date
-  const formatDate = (value: string) => {
-    if (!value) return "";
-    // Si el valor es tipo 'YYYY-MM-DD'
-    const match = /^([0-9]{4})-([0-9]{2})-([0-9]{2})/.exec(value);
-    if (match) {
-      const [, year, month, day] = match;
-      return `${day}/${month}/${year}`;
-    }
-    // Si no, usa el Date normal
-    const d = new Date(value);
-    if (isNaN(d.getTime())) return value;
-    const day = String(d.getDate()).padStart(2, "0");
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const year = d.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-  // Usar formatCell para cada celda
-  // Importar la función
-  // import { formatCell } from './formatCell';
   const tableRows = data.map((row) =>
     columns.map((col) => formatCell(row[col.key], col.dataType))
   );
@@ -47,7 +27,7 @@ export function generateTablePDF({
     startY: 24,
     styles: { fontSize: 10 },
     headStyles: {
-      fillColor: [255, 172, 88], // #ffac58 en formato RGB
+      fillColor: [255, 172, 88],
       textColor: 20,
       fontStyle: "bold",
     },

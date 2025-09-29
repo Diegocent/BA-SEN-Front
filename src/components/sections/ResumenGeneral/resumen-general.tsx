@@ -5,54 +5,23 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
+} from "../../ui/card";
 import { Database, Users, MapPin } from "lucide-react";
-import { MapaParaguay } from "../mapa-paraguay";
-import { Column, DataTable } from "../data-table";
-import { useResumenGeneralQuery, useAsistenciaDetalladaQuery } from "../../api";
+import { MapaParaguay } from "../../mapa-paraguay";
+import { DataTable } from "../../data-table";
+import {
+  useResumenGeneralQuery,
+  useAsistenciaDetalladaQuery,
+} from "../../../api";
 import { useEffect, useState } from "react";
-import GraficoDistribucionAyudasPorAnio from "../grafico-distribucion-ayudas-anio";
-import GraficoDistribucionAyudasPorDepartamento from "../grafico-distribucion-ayudas-departamento";
-import GraficoPieEventos from "../grafico-pie-eventos";
-import GraficoTendenciaMensual from "../grafico-tendencia-mensual";
+import GraficoDistribucionAyudasPorAnio from "../../grafico-distribucion-ayudas-anio";
+import GraficoDistribucionAyudasPorDepartamento from "../../grafico-distribucion-ayudas-departamento";
+import GraficoPieEventos from "../../grafico-pie-eventos";
+import GraficoTendenciaMensual from "../../grafico-tendencia-mensual";
 import { generateTablePDF } from "@/lib/pdfUtils";
 import { ObtenerTotalData } from "@/hooks/obtenerTotalData";
-
-const columnasRegistros: Column[] = [
-  { key: "fecha", label: "Fecha", dataType: "date", filterType: "date" },
-  {
-    key: "localidad",
-    label: "Localidad",
-    dataType: "text",
-    filterType: "text",
-  },
-  { key: "distrito", label: "Distrito", dataType: "text", filterType: "text" },
-  {
-    key: "departamento",
-    label: "Departamento",
-    dataType: "text",
-    filterType: "text",
-  },
-  { key: "evento", label: "Evento", dataType: "text", filterType: "text" },
-  {
-    key: "kit_sentencia",
-    label: "Kit de sentencia de la Corte",
-    dataType: "number",
-    filterType: "text",
-  },
-  {
-    key: "kit_evento",
-    label: "Kit de asistencia por evento adverso",
-    dataType: "number",
-    filterType: "text",
-  },
-  {
-    key: "chapa_fibrocemento_cantidad",
-    label: "Chapas",
-    dataType: "number",
-    filterType: "text",
-  },
-];
+import { columnasRegistros, columnasReportes } from "./constants/constants";
+import VisualizarDetallesGenericos from "@/components/VisualizarDetallesGenericos";
 
 type ResumenGeneralData = {
   cantidad_departamentos: number;
@@ -95,15 +64,19 @@ export function ResumenGeneral() {
   // Consulta con filtros y página y fechas
   const {
     data: registrosRecientes,
-    error: errorAsistencia,
-    isLoading: isLoadingAsistencia,
+    // error: errorAsistencia,
+    // isLoading: isLoadingAsistencia,
   } = useAsistenciaDetalladaQuery(queryParams) as {
     data: any | undefined;
     error: any;
     isLoading: boolean;
   };
   // Hook de RTK Query para el endpoint resumen-general
-  const { data, error, isLoading } = useResumenGeneralQuery(dateParams) as {
+  const {
+    data,
+    // error,
+    // isLoading
+  } = useResumenGeneralQuery(dateParams) as {
     data: ResumenGeneralData | undefined;
     error: any;
     isLoading: boolean;
@@ -124,7 +97,7 @@ export function ResumenGeneral() {
     );
     // Llamar a la función para generar el PDF, pasando los parámetros actuales
     generateTablePDF({
-      columns: columnasRegistros,
+      columns: columnasReportes,
       data: registrosTotales?.results || [],
       title: "Resumen General",
     });
@@ -140,62 +113,6 @@ export function ResumenGeneral() {
     }
   }, [data]);
 
-  // Puedes eliminar registros mock si ya usas la data real
-  const renderDetallesRegistro = (registro: any) => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <h4 className="font-semibold text-primary">Información General</h4>
-          <div className="mt-2 space-y-2">
-            <p>
-              <span className="font-medium">ID:</span> {registro.id}
-            </p>
-            <p>
-              <span className="font-medium">Fecha:</span> {registro.fecha}
-            </p>
-            <p>
-              <span className="font-medium">Estado:</span> {registro.estado}
-            </p>
-            <p>
-              <span className="font-medium">Responsable:</span>{" "}
-              {registro.responsable}
-            </p>
-          </div>
-        </div>
-        <div>
-          <h4 className="font-semibold text-primary">Ubicación y Ayuda</h4>
-          <div className="mt-2 space-y-2">
-            <p>
-              <span className="font-medium">Departamento:</span>{" "}
-              {registro.departamento}
-            </p>
-            <p>
-              <span className="font-medium">Distrito:</span> {registro.distrito}
-            </p>
-            <p>
-              <span className="font-medium">Tipo de Ayuda:</span>{" "}
-              {registro.tipoAyuda}
-            </p>
-            <p>
-              <span className="font-medium">Beneficiarios:</span>{" "}
-              {registro.beneficiarios}
-            </p>
-          </div>
-        </div>
-      </div>
-      <div>
-        <h4 className="font-semibold text-primary">Detalles Adicionales</h4>
-        <div className="mt-2 p-4 bg-muted rounded-lg">
-          <p className="text-sm">
-            Registro de asistencia humanitaria realizado en {registro.distrito},{" "}
-            {registro.departamento}. Se entregaron {registro.tipoAyuda} a{" "}
-            {registro.beneficiarios} beneficiarios bajo la supervisión de{" "}
-            {registro.responsable}.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
   return (
     <div className="space-y-8">
       {/* Filtro global de fechas */}
@@ -422,7 +339,7 @@ export function ResumenGeneral() {
                   }
                 }
                 columns={columnasRegistros}
-                onViewDetails={renderDetallesRegistro}
+                onViewDetails={VisualizarDetallesGenericos}
                 itemsPerPage={10}
                 onPageChange={setPageUrl}
                 filters={filters}

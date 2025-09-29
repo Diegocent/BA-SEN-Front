@@ -7,17 +7,24 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { Column, DataTable } from "../data-table";
+} from "../../ui/card";
+import { DataTable } from "../../data-table";
 import { useGetPorEventoQuery, useEventosPorDepartamentoQuery } from "@/api";
 import { useState, useEffect } from "react";
 import { generateTablePDF } from "@/lib/pdfUtils";
 import { ObtenerTotalData } from "@/hooks/obtenerTotalData";
-import GraficoPieEventos from "../grafico-pie-eventos";
-import GraficoAyudasPorEvento from "../grafico-ayudas-por-evento";
-import GraficoComposicionAyudasPorEvento from "../grafico-composicion-ayudas-por-evento";
-import GraficoComparacionEventosAnio from "../grafico-comparacion-eventos-anio";
-import GraficoTendenciaMensualEventos from "../grafico-tendencia-mensual-eventos";
+import GraficoPieEventos from "../../grafico-pie-eventos";
+import GraficoAyudasPorEvento from "../../grafico-ayudas-por-evento";
+import GraficoComposicionAyudasPorEvento from "../../grafico-composicion-ayudas-por-evento";
+import GraficoComparacionEventosAnio from "../../grafico-comparacion-eventos-anio";
+import GraficoTendenciaMensualEventos from "../../grafico-tendencia-mensual-eventos";
+import {
+  columnasTipoEventos,
+  columnasEventosDepartamento,
+  columnasTipoEventosPDF,
+  columnasEventosDepartamentoPDF,
+} from "./constants/constants";
+import VisualizarDetallesGenericos from "@/components/VisualizarDetallesGenericos";
 
 function renderDetallesEvento(item: any) {
   return (
@@ -50,57 +57,6 @@ function renderDetallesEvento(item: any) {
 }
 
 export function AnalisisEventos() {
-  // Columnas
-  const columnasTipoEventos: Column[] = [
-    {
-      key: "evento",
-      label: "Tipo de evento",
-      dataType: "text",
-      filterType: "text",
-    },
-    {
-      key: "numeroOcurrencias",
-      label: "Numero de Ocurrencias",
-      dataType: "number",
-      filterType: "text",
-    },
-    {
-      key: "kit_sentencia",
-      label: "Kit sentencia",
-      dataType: "number",
-      filterType: "text",
-    },
-    {
-      key: "kit_evento",
-      label: "Kit por eventos adversos",
-      dataType: "number",
-      filterType: "text",
-    },
-    { key: "chapas", label: "Chapas", dataType: "number", filterType: "text" },
-  ];
-  const columnasEventosDepartamento: Column[] = [
-    {
-      key: "departamento",
-      label: "Departamento",
-      dataType: "text",
-      filterType: "text",
-    },
-    { key: "evento", label: "Evento", dataType: "text", filterType: "text" },
-    {
-      key: "kit_sentencia",
-      label: "Kits sentencia",
-      dataType: "number",
-      filterType: "text",
-    },
-    {
-      key: "kit_evento",
-      label: "Kits por eventos adversos",
-      dataType: "number",
-      filterType: "text",
-    },
-    { key: "chapas", label: "Chapas", dataType: "number", filterType: "text" },
-  ];
-
   // Filtro global de fechas
   const [dateRange, setDateRange] = useState<{
     startDate: string;
@@ -154,7 +110,7 @@ export function AnalisisEventos() {
       dataEventos?.count || 10
     );
     generateTablePDF({
-      columns: columnasTipoEventos,
+      columns: columnasTipoEventosPDF,
       data: registrosTotales?.results || [],
       title: "Eventos por Tipo",
     });
@@ -174,7 +130,7 @@ export function AnalisisEventos() {
       dataPorDepartamento?.count || 10
     );
     generateTablePDF({
-      columns: columnasEventosDepartamento,
+      columns: columnasEventosDepartamentoPDF,
       data: registrosTotales?.results || [],
       title: "Eventos por Departamento",
     });
@@ -400,7 +356,7 @@ export function AnalisisEventos() {
               searchPlaceHolder="Buscar tipo de evento..."
               title="Resumen por Tipo de Eventos"
               subtitle="Datos consolidados de asistencia humanitaria por tipo de evento"
-              onViewDetails={renderDetallesEvento}
+              onViewDetails={VisualizarDetallesGenericos}
               itemsPerPage={10}
               onPageChange={setPageUrlEvento}
               filters={filtersEvento}
@@ -430,7 +386,7 @@ export function AnalisisEventos() {
               searchPlaceHolder="Buscar departamento..."
               title="Eventos por Departamento"
               subtitle="Distribución de eventos de emergencia por departamento"
-              onViewDetails={renderDetallesEvento}
+              onViewDetails={VisualizarDetallesGenericos}
               itemsPerPage={10}
               onPageChange={setPageUrlDepto}
               filters={filtersDepto}

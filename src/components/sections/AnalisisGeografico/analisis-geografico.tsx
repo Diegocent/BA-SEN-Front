@@ -5,16 +5,23 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { DataTable } from "../data-table";
+} from "../../ui/card";
+import { DataTable } from "../../data-table";
 import { useGetPorDepartamentoQuery, useGetPorUbicacionQuery } from "@/api";
-import GraficoTotalAyudasPorDepartamento from "../grafico-total-ayudas-departamento";
-import GraficoTopLocalidades from "../grafico-top-localidades";
-import GraficoEvolucionAyudasTopDepartamentos from "../grafico-evolucion-ayudas-top-departamentos";
-import HeatmapDepartamentoAnio from "../heatmap-departamento-anio";
+import GraficoTotalAyudasPorDepartamento from "../../grafico-total-ayudas-departamento";
+import GraficoTopLocalidades from "../../grafico-top-localidades";
+import GraficoEvolucionAyudasTopDepartamentos from "../../grafico-evolucion-ayudas-top-departamentos";
+import HeatmapDepartamentoAnio from "../../heatmap-departamento-anio";
 import { useState, useEffect } from "react";
 import { generateTablePDF } from "@/lib/pdfUtils";
 import { ObtenerTotalData } from "@/hooks/obtenerTotalData";
+import {
+  columnasDepartamentos,
+  columnasDistritos,
+  columnasDepartamentosPDF,
+  columnasDistritosPDF,
+} from "./constants/constants";
+import VisualizarDetallesGenericos from "@/components/VisualizarDetallesGenericos";
 export function AnalisisGeografico() {
   // Filtro global de fechas
   const [dateRange, setDateRange] = useState<{
@@ -75,7 +82,7 @@ export function AnalisisGeografico() {
       dataDepartamento?.count || 10
     );
     generateTablePDF({
-      columns: columnasDepartamentos,
+      columns: columnasDepartamentosPDF,
       data: registrosTotales?.results || [],
       title: "Resumen por Departamento",
     });
@@ -95,30 +102,17 @@ export function AnalisisGeografico() {
       dataDistrito?.count || 10
     );
     generateTablePDF({
-      columns: columnasDistritos,
+      columns: columnasDistritosPDF,
       data: registrosTotales?.results || [],
       title: "Resumen por Distrito",
     });
   };
-  const columnasDepartamentos = [
-    { key: "departamento", label: "Departamento" },
-    { key: "kit_sentencia", label: "Kits Sentencia" },
-    { key: "kit_evento", label: "Kits de asistencia por eventos adversos" },
-    { key: "chapas", label: "Chapas" },
-  ];
 
-  const columnasDistritos = [
-    { key: "departamento", label: "Departamento" },
-    { key: "distrito", label: "Distrito" },
-    { key: "kit_sentencia", label: "Kits Sentencia" },
-    { key: "kit_evento", label: "Kits de asistencia por eventos adversos" },
-    { key: "chapas", label: "Chapas" },
-  ];
   // Paginación para distritos
   const {
     data: dataDistrito,
-    error: errorDistrito,
-    isLoading: isLoadingDistrito,
+    // error: errorDistrito,
+    // isLoading: isLoadingDistrito,
   } = useGetPorUbicacionQuery(queryParamsDistrito) as {
     data: any | undefined;
     error: any;
@@ -128,8 +122,8 @@ export function AnalisisGeografico() {
   // Paginación para departamentos
   const {
     data: dataDepartamento,
-    error: errorDepartamento,
-    isLoading: isLoadingDepartamento,
+    // error: errorDepartamento,
+    // isLoading: isLoadingDepartamento,
   } = useGetPorDepartamentoQuery(queryParamsDepto) as {
     data: any | undefined;
     error: any;
@@ -328,7 +322,7 @@ export function AnalisisGeografico() {
               searchPlaceHolder="Buscar departamento..."
               title="Resumen por Departamento"
               subtitle="Datos consolidados de asistencia humanitaria por departamento"
-              onViewDetails={() => null}
+              onViewDetails={VisualizarDetallesGenericos}
               itemsPerPage={10}
               onPageChange={setPageUrlDepto}
               filters={filtersDepto}
@@ -358,7 +352,7 @@ export function AnalisisGeografico() {
               searchPlaceHolder="Buscar distrito..."
               title="Resumen por Distrito"
               subtitle="Datos detallados de asistencia humanitaria por distrito"
-              onViewDetails={() => null}
+              onViewDetails={VisualizarDetallesGenericos}
               itemsPerPage={10}
               onPageChange={setPageUrlDistrito}
               filters={filtersDistrito}
