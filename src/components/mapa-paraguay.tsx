@@ -18,8 +18,15 @@ interface DepartamentoData {
   lng: number;
   zoom: number;
   cantidad_registros: number;
-  total_kits: number;
-  total_chapas: number;
+  kit_sentencia: number;
+  kit_evento: number;
+  chapa_fibrocemento_cantidad: number;
+  chapa_zinc_cantidad: number;
+  colchones_cantidad: number;
+  frazadas_cantidad: number;
+  terciadas_cantidad: number;
+  puntales_cantidad: number;
+  carpas_plasticas_cantidad: number;
   evento_mas_frecuente: string;
 }
 
@@ -34,10 +41,8 @@ export function MapaParaguay({
   fecha_inicio,
   fecha_fin,
 }: MapaParaguayProps) {
-  // Estado para el departamento seleccionado (solo info geográfica)
   const [selectedDepartamento, setSelectedDepartamento] =
     useState<DepartamentoData | null>(null);
-  // Estado para los datos a mostrar en el dialog (info de base de datos)
   const [selectedDepartamentoData, setSelectedDepartamentoData] = useState<
     any | null
   >(null);
@@ -45,7 +50,7 @@ export function MapaParaguay({
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
 
-  // Datos mock base con lat/lng/zoom
+  // Mock inicial con todos los campos en 0
   const departamentosMock: DepartamentoData[] = [
     {
       departamento: "CAPITAL",
@@ -53,8 +58,15 @@ export function MapaParaguay({
       lng: -57.6359,
       zoom: 12,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -63,8 +75,15 @@ export function MapaParaguay({
       lng: -57.4259,
       zoom: 10,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -73,8 +92,15 @@ export function MapaParaguay({
       lng: -54.6436,
       zoom: 9,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -83,8 +109,15 @@ export function MapaParaguay({
       lng: -55.9178,
       zoom: 9,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -93,8 +126,15 @@ export function MapaParaguay({
       lng: -56.0175,
       zoom: 9,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -103,8 +143,15 @@ export function MapaParaguay({
       lng: -57.0789,
       zoom: 9,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -113,8 +160,15 @@ export function MapaParaguay({
       lng: -56.8467,
       zoom: 9,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -123,8 +177,15 @@ export function MapaParaguay({
       lng: -56.45,
       zoom: 9,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -133,8 +194,15 @@ export function MapaParaguay({
       lng: -56.3711,
       zoom: 9,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -143,8 +211,15 @@ export function MapaParaguay({
       lng: -57.0833,
       zoom: 9,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -153,8 +228,15 @@ export function MapaParaguay({
       lng: -57.1456,
       zoom: 9,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -163,8 +245,15 @@ export function MapaParaguay({
       lng: -58.1833,
       zoom: 8,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -173,8 +262,15 @@ export function MapaParaguay({
       lng: -59.05,
       zoom: 8,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -183,8 +279,15 @@ export function MapaParaguay({
       lng: -60.4167,
       zoom: 8,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -193,8 +296,15 @@ export function MapaParaguay({
       lng: -56.0333,
       zoom: 9,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -203,8 +313,15 @@ export function MapaParaguay({
       lng: -55.1667,
       zoom: 9,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -213,8 +330,15 @@ export function MapaParaguay({
       lng: -57.4333,
       zoom: 9,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
     {
@@ -223,23 +347,26 @@ export function MapaParaguay({
       lng: -58.2833,
       zoom: 9,
       cantidad_registros: 0,
-      total_kits: 0,
-      total_chapas: 0,
+      kit_sentencia: 0,
+      kit_evento: 0,
+      chapa_fibrocemento_cantidad: 0,
+      chapa_zinc_cantidad: 0,
+      colchones_cantidad: 0,
+      frazadas_cantidad: 0,
+      terciadas_cantidad: 0,
+      puntales_cantidad: 0,
+      carpas_plasticas_cantidad: 0,
       evento_mas_frecuente: "",
     },
   ];
 
-  // Obtener datos reales del backend
-  const {
-    data: resumenData,
-    isLoading,
-    error,
-  } = useResumenPorDepartamentoQuery({
+  // Obtener datos reales
+  const { data: resumenData } = useResumenPorDepartamentoQuery({
     fecha_desde: fecha_inicio,
     fecha_hasta: fecha_fin,
   });
 
-  // Merge: para cada departamento mock, si hay datos reales, los sobreescribe
+  // Merge mock + data real
   const departamentosData: DepartamentoData[] = departamentosMock.map(
     (mock) => {
       const real = resumenData?.find(
@@ -247,12 +374,20 @@ export function MapaParaguay({
           (d.departamento || d.nombre || d.name)?.toUpperCase() ===
           mock.departamento.toUpperCase()
       );
+
       return real
         ? {
             ...mock,
             cantidad_registros: real.cantidad_registros ?? 0,
-            total_kits: real.total_kits ?? 0,
-            total_chapas: real.total_chapas ?? 0,
+            kit_sentencia: real.kit_sentencia ?? 0,
+            kit_evento: real.kit_evento ?? 0,
+            chapa_fibrocemento_cantidad: real.chapa_fibrocemento_cantidad ?? 0,
+            chapa_zinc_cantidad: real.chapa_zinc_cantidad ?? 0,
+            colchones_cantidad: real.colchones_cantidad ?? 0,
+            frazadas_cantidad: real.frazadas_cantidad ?? 0,
+            terciadas_cantidad: real.terciadas_cantidad ?? 0,
+            puntales_cantidad: real.puntales_cantidad ?? 0,
+            carpas_plasticas_cantidad: real.carpas_plasticas_cantidad ?? 0,
             evento_mas_frecuente: real.evento_mas_frecuente ?? "",
           }
         : mock;
@@ -262,9 +397,7 @@ export function MapaParaguay({
   useEffect(() => {
     if (!mapRef.current) return;
 
-    // Cargar Leaflet dinámicamente
     const loadLeaflet = async () => {
-      // Cargar CSS de Leaflet
       if (!document.querySelector('link[href*="leaflet"]')) {
         const link = document.createElement("link");
         link.rel = "stylesheet";
@@ -272,30 +405,23 @@ export function MapaParaguay({
         document.head.appendChild(link);
       }
 
-      // Cargar JS de Leaflet
       if (!(window as any).L) {
         const script = document.createElement("script");
         script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
         document.head.appendChild(script);
-
         await new Promise((resolve) => {
           script.onload = resolve;
         });
       }
 
       const L = (window as any).L;
-
-      // Inicializar mapa centrado en Paraguay (igual que el código original)
       const map = L.map(mapRef.current).setView([-23.442503, -58.443832], 6);
 
-      // Agregar capa de mapa
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "© OpenStreetMap contributors",
       }).addTo(map);
 
-      // Crear marcadores para cada departamento
       departamentosData.forEach((dept) => {
-        // Crear marcador personalizado con color primary
         const customIcon = L.divIcon({
           className: "custom-marker",
           html: `<div style="
@@ -315,10 +441,8 @@ export function MapaParaguay({
           icon: customIcon,
         }).addTo(map);
 
-        // Agregar evento de click para mostrar diálogo detallado
         marker.on("click", () => {
           setSelectedDepartamento(dept);
-          // Buscar los datos en la consulta según el nombre del departamento
           const real = resumenData?.find(
             (d: any) =>
               (d.departamento || d.nombre || d.name)?.toUpperCase() ===
@@ -335,7 +459,6 @@ export function MapaParaguay({
 
     loadLeaflet();
 
-    // Cleanup
     return () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
@@ -405,13 +528,45 @@ export function MapaParaguay({
                 <div className="flex justify-between items-center p-2 bg-secondary-light rounded">
                   <span className="text-sm font-medium">Total Chapas:</span>
                   <span className="text-sm font-bold text-primary">
-                    {selectedDepartamentoData?.total_chapas ?? 0}
+                    {(selectedDepartamentoData?.chapa_fibrocemento_cantidad ??
+                      0) + (selectedDepartamentoData?.chapa_zinc_cantidad ?? 0)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center p-2 bg-secondary-light rounded">
                   <span className="text-sm font-medium">Total Kits:</span>
                   <span className="text-sm font-bold text-warning">
-                    {selectedDepartamentoData?.total_kits ?? 0}
+                    {(selectedDepartamentoData?.kit_sentencia ?? 0) +
+                      (selectedDepartamentoData?.kit_evento ?? 0)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-secondary-light rounded">
+                  <span className="text-sm font-medium">Colchones:</span>
+                  <span className="text-sm font-bold text-warning">
+                    {selectedDepartamentoData?.colchones_cantidad ?? 0}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-secondary-light rounded">
+                  <span className="text-sm font-medium">Frazadas:</span>
+                  <span className="text-sm font-bold text-warning">
+                    {selectedDepartamentoData?.frazadas_cantidad ?? 0}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-secondary-light rounded">
+                  <span className="text-sm font-medium">Terciadas:</span>
+                  <span className="text-sm font-bold text-warning">
+                    {selectedDepartamentoData?.terciadas_cantidad ?? 0}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-secondary-light rounded">
+                  <span className="text-sm font-medium">Puntales:</span>
+                  <span className="text-sm font-bold text-warning">
+                    {selectedDepartamentoData?.puntales_cantidad ?? 0}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-secondary-light rounded">
+                  <span className="text-sm font-medium">Carpas Plásticas:</span>
+                  <span className="text-sm font-bold text-warning">
+                    {selectedDepartamentoData?.carpas_plasticas_cantidad ?? 0}
                   </span>
                 </div>
               </div>

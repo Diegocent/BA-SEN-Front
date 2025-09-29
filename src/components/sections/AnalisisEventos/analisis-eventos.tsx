@@ -7,15 +7,24 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { Column, DataTable } from "../data-table";
+} from "../../ui/card";
+import { DataTable } from "../../data-table";
 import { useGetPorEventoQuery, useEventosPorDepartamentoQuery } from "@/api";
-import { useState } from "react";
-import GraficoPieEventos from "../grafico-pie-eventos";
-import GraficoAyudasPorEvento from "../grafico-ayudas-por-evento";
-import GraficoComposicionAyudasPorEvento from "../grafico-composicion-ayudas-por-evento";
-import GraficoComparacionEventosAnio from "../grafico-comparacion-eventos-anio";
-import GraficoTendenciaMensualEventos from "../grafico-tendencia-mensual-eventos";
+import { useState, useEffect } from "react";
+import { generateTablePDF } from "@/lib/pdfUtils";
+import { ObtenerTotalData } from "@/hooks/obtenerTotalData";
+import GraficoPieEventos from "../../grafico-pie-eventos";
+import GraficoAyudasPorEvento from "../../grafico-ayudas-por-evento";
+import GraficoComposicionAyudasPorEvento from "../../grafico-composicion-ayudas-por-evento";
+import GraficoComparacionEventosAnio from "../../grafico-comparacion-eventos-anio";
+import GraficoTendenciaMensualEventos from "../../grafico-tendencia-mensual-eventos";
+import {
+  columnasTipoEventos,
+  columnasEventosDepartamento,
+  columnasTipoEventosPDF,
+  columnasEventosDepartamentoPDF,
+} from "./constants/constants";
+import VisualizarDetallesGenericos from "@/components/VisualizarDetallesGenericos";
 
 function renderDetallesEvento(item: any) {
   return (
@@ -53,56 +62,6 @@ export function AnalisisEventos() {
     startDate: string;
     endDate: string;
   }>({ startDate: "", endDate: "" });
-  // Columnas
-  const columnasTipoEventos: Column[] = [
-    {
-      key: "evento",
-      label: "Tipo de evento",
-      dataType: "text",
-      filterType: "text",
-    },
-    {
-      key: "numeroOcurrencias",
-      label: "Numero de Ocurrencias",
-      dataType: "number",
-      filterType: "text",
-    },
-    {
-      key: "kit_sentencia",
-      label: "Kit sentencia",
-      dataType: "number",
-      filterType: "text",
-    },
-    {
-      key: "kit_evento",
-      label: "Kit por eventos adversos",
-      dataType: "number",
-      filterType: "text",
-    },
-    { key: "chapas", label: "Chapas", dataType: "number", filterType: "text" },
-  ];
-  const columnasEventosDepartamento: Column[] = [
-    {
-      key: "departamento",
-      label: "Departamento",
-      dataType: "text",
-      filterType: "text",
-    },
-    { key: "evento", label: "Evento", dataType: "text", filterType: "text" },
-    {
-      key: "kit_sentencia",
-      label: "Kits sentencia",
-      dataType: "number",
-      filterType: "text",
-    },
-    {
-      key: "kit_evento",
-      label: "Kits por eventos adversos",
-      dataType: "number",
-      filterType: "text",
-    },
-    { key: "chapas", label: "Chapas", dataType: "number", filterType: "text" },
-  ];
 
   // Estado y lógica para filtros y paginación por tipo de evento
   const [filtersEvento, setFiltersEvento] = useState<Record<string, any>>({});
@@ -136,6 +95,46 @@ export function AnalisisEventos() {
           : "1",
       }
     : { page: "1" };
+
+  // PDF params y handlers para EVENTOS
+  const [pdfParamEvento, setPdfParamEvento] = useState({});
+  useEffect(() => {
+    setPdfParamEvento({ ...filtersEventoWithoutPage, ...dateParams });
+  }, [filtersEvento, dateRange]);
+
+  const handleImprimirPDFEvento = async () => {
+    const registrosTotales = await ObtenerTotalData(
+      "",
+      "por-evento",
+      pdfParamEvento,
+      dataEventos?.count || 10
+    );
+    generateTablePDF({
+      columns: columnasTipoEventosPDF,
+      data: registrosTotales?.results || [],
+      title: "Eventos por Tipo",
+    });
+  };
+
+  // PDF params y handlers para EVENTOS POR DEPARTAMENTO
+  const [pdfParamDepto, setPdfParamDepto] = useState({});
+  useEffect(() => {
+    setPdfParamDepto({ ...filtersDeptoWithoutPage, ...dateParams });
+  }, [filtersDepto, dateRange]);
+
+  const handleImprimirPDFDepto = async () => {
+    const registrosTotales = await ObtenerTotalData(
+      "",
+      "eventos-por-departamento",
+      pdfParamDepto,
+      dataPorDepartamento?.count || 10
+    );
+    generateTablePDF({
+      columns: columnasEventosDepartamentoPDF,
+      data: registrosTotales?.results || [],
+      title: "Eventos por Departamento",
+    });
+  };
   const queryParamsDepto = {
     ...filtersDeptoWithoutPage,
     ...pageParamDepto,
@@ -337,16 +336,12 @@ export function AnalisisEventos() {
           </Card>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-primary">
-              Resumen por Tipo de Eventos
-            </CardTitle>
-            <CardDescription>
-              Datos consolidados de asistencia humanitaria por tipo de evento
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <div className="overflow-x-auto w-full">
             <DataTable
               data={
                 dataEventos || {
@@ -359,26 +354,24 @@ export function AnalisisEventos() {
               }
               columns={columnasTipoEventos}
               searchPlaceHolder="Buscar tipo de evento..."
-              title={""}
-              onViewDetails={renderDetallesEvento}
+              title="Resumen por Tipo de Eventos"
+              subtitle="Datos consolidados de asistencia humanitaria por tipo de evento"
+              onViewDetails={VisualizarDetallesGenericos}
               itemsPerPage={10}
               onPageChange={setPageUrlEvento}
               filters={filtersEvento}
               setFilters={setFiltersEvento}
+              handleImprimir={handleImprimirPDFEvento}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </motion.div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-info">
-              Eventos por Departamento
-            </CardTitle>
-            <CardDescription>
-              Distribución de eventos de emergencia por departamento
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <div className="overflow-x-auto w-full">
             <DataTable
               data={
                 dataPorDepartamento || {
@@ -391,15 +384,17 @@ export function AnalisisEventos() {
               }
               columns={columnasEventosDepartamento}
               searchPlaceHolder="Buscar departamento..."
-              title={""}
-              onViewDetails={renderDetallesEvento}
+              title="Eventos por Departamento"
+              subtitle="Distribución de eventos de emergencia por departamento"
+              onViewDetails={VisualizarDetallesGenericos}
               itemsPerPage={10}
               onPageChange={setPageUrlDepto}
               filters={filtersDepto}
               setFilters={setFiltersDepto}
+              handleImprimir={handleImprimirPDFDepto}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </motion.div>
       </motion.div>
     </motion.div>
   );

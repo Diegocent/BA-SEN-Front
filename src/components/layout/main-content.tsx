@@ -1,10 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ResumenGeneral } from "../sections/resumen-general";
-import { AnalisisGeografico } from "../sections/analisis-geografico";
-import { AnalisisTemporal } from "../sections/analisis-temporal";
-import { AnalisisEventos } from "../sections/analisis-eventos";
+import { ResumenGeneral } from "../sections/ResumenGeneral/resumen-general";
+import { AnalisisGeografico } from "../sections/AnalisisGeografico/analisis-geografico";
+import { AnalisisTemporal } from "../sections/AnalisisTemporal/analisis-temporal";
+import { AnalisisEventos } from "../sections/AnalisisEventos/analisis-eventos";
 
 interface MainContentProps {
   activeSection: string;

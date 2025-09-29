@@ -1,5 +1,3 @@
-"use client";
-
 // Tipos para columnas y props de DataTable
 export type Column = {
   key: string;
@@ -11,6 +9,7 @@ export type Column = {
 
 export interface DataTableProps {
   title: string;
+  subtitle?: string;
   data:
     | any[]
     | {
@@ -26,16 +25,23 @@ export interface DataTableProps {
   onPageChange?: (url: string) => void;
   filters: Record<string, any>;
   setFilters: (filters: Record<string, any>) => void;
+  handleImprimir?: () => void;
 }
 
 import type React from "react";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Eye, ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { Eye, ChevronLeft, ChevronRight, Search, FileText } from "lucide-react";
 import { Filter } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import {
   Table,
@@ -45,10 +51,12 @@ import {
   TableHead,
   TableCell,
 } from "./ui/table";
+import { formatCell } from "@/lib/formatCell";
 
 export function DataTable(props: DataTableProps) {
   const {
     title,
+    subtitle,
     data,
     columns,
     onViewDetails,
@@ -57,6 +65,7 @@ export function DataTable(props: DataTableProps) {
     onPageChange,
     filters,
     setFilters,
+    handleImprimir,
   } = props;
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -125,41 +134,6 @@ export function DataTable(props: DataTableProps) {
     setFilters(newFilters);
   };
 
-  // Formateo de celdas: separador de miles con regex para números/string numéricos de 4+ dígitos
-  const formatCell = (value: any, dataType?: string) => {
-    // Si es null/undefined, mostrar vacío
-    if (value === null || value === undefined) return "";
-
-    // Separador de miles para números o strings numéricos de 4+ dígitos
-    if (
-      (typeof value === "number" && Math.abs(value) >= 1000) ||
-      (typeof value === "string" && /^-?\d{4,}$/.test(value))
-    ) {
-      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    }
-
-    // Formateo de fechas
-    if (
-      (dataType === "date" ||
-        (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value))) &&
-      value
-    ) {
-      // Si ya viene como string YYYY-MM-DD, mostramos directo
-      if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-        const [year, month, day] = value.split("-");
-        return `${day}/${month}/${year}`;
-      }
-      // Si es Date u otro formato válido, fallback a toLocaleDateString
-      const d = new Date(value);
-      if (!isNaN(d.getTime())) {
-        return d.toLocaleDateString("es-ES");
-      }
-    }
-
-    // Por defecto, mostrar el valor tal cual
-    return value;
-  };
-
   const [dateFrom, setDateFrom] = useState<string>("");
   const [dateTo, setDateTo] = useState<string>("");
 
@@ -167,7 +141,16 @@ export function DataTable(props: DataTableProps) {
     <Card>
       <CardHeader>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <CardTitle className="text-primary">{title}</CardTitle>
+          {/* Aqui en caso de que haya un subtitulo se mostrara uno abajo de otro */}
+          <div className="flex flex-col">
+            <CardTitle className="text-primary">{title}</CardTitle>
+            {subtitle && (
+              <CardDescription className="text-sm text-muted-foreground mt-1">
+                {subtitle}
+              </CardDescription>
+            )}
+          </div>
+
           <div className="flex items-center gap-2">
             {/* Icono de filtro */}
             <Button
@@ -178,6 +161,19 @@ export function DataTable(props: DataTableProps) {
             >
               <Filter className="h-5 w-5" />
             </Button>
+            {/* Botón imprimir PDF si viene la función */}
+            {handleImprimir && (
+              <Button
+                variant="primary"
+                size="default"
+                onClick={handleImprimir}
+                className="ml-2 bg-primary hover:bg-primary-dark"
+                title="Imprimir PDF"
+              >
+                <FileText />
+                <span className="text-white font-semibold">Imprimir PDF</span>
+              </Button>
+            )}
           </div>
         </div>
         {/* Panel de filtros y chips en un solo contenedor */}
