@@ -26,36 +26,6 @@ import {
 } from "./constants/constants";
 import VisualizarDetallesGenericos from "@/components/VisualizarDetallesGenericos";
 
-function renderDetallesEvento(item: any) {
-  return (
-    <div className="space-y-2">
-      <div>
-        <span className="font-medium">Evento:</span>{" "}
-        {item.evento || item.tipoEvento}
-      </div>
-      <div>
-        <span className="font-medium">Departamento:</span> {item.departamento}
-      </div>
-      <div>
-        <span className="font-medium">Kits sentencia:</span>{" "}
-        {item.kit_sentencia}
-      </div>
-      <div>
-        <span className="font-medium">Kits evento:</span> {item.kit_evento}
-      </div>
-      <div>
-        <span className="font-medium">Chapas:</span> {item.chapas}
-      </div>
-      {item.numeroOcurrencias && (
-        <div>
-          <span className="font-medium">Ocurrencias:</span>{" "}
-          {item.numeroOcurrencias}
-        </div>
-      )}
-    </div>
-  );
-}
-
 export function AnalisisEventos() {
   // Filtro global de fechas
   const [dateRange, setDateRange] = useState<{
@@ -148,6 +118,11 @@ export function AnalisisEventos() {
   const { data: dataPorDepartamento } = useEventosPorDepartamentoQuery(
     queryParamsDepto
   ) as { data: any | undefined };
+
+  const [inundaciones, setInundaciones] = useState(0);
+  const [sequias, setSequias] = useState(0);
+  const [incendios, setIncendios] = useState(0);
+  const [tormentas, setTormentas] = useState(0);
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -209,6 +184,10 @@ export function AnalisisEventos() {
             <GraficoPieEventos
               fecha_inicio={dateRange.startDate}
               fecha_fin={dateRange.endDate}
+              setInundaciones={setInundaciones}
+              setSequias={setSequias}
+              setIncendios={setIncendios}
+              setTormentas={setTormentas}
             />
           </CardContent>
         </Card>
@@ -219,7 +198,7 @@ export function AnalisisEventos() {
               <CardTitle className="text-info">Inundaciones</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold text-info">0</p>
+              <p className="text-2xl font-bold text-info">{inundaciones}</p>
               <p className="text-sm text-muted-foreground">
                 Eventos registrados
               </p>
@@ -231,7 +210,7 @@ export function AnalisisEventos() {
               <CardTitle className="text-warning">Sequías</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold text-warning">0</p>
+              <p className="text-2xl font-bold text-warning">{sequias}</p>
               <p className="text-sm text-muted-foreground">
                 Eventos registrados
               </p>
@@ -243,7 +222,7 @@ export function AnalisisEventos() {
               <CardTitle className="text-danger">Incendios</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold text-danger">0</p>
+              <p className="text-2xl font-bold text-danger">{incendios}</p>
               <p className="text-sm text-muted-foreground">
                 Eventos registrados
               </p>
@@ -252,10 +231,10 @@ export function AnalisisEventos() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-success">Otros</CardTitle>
+              <CardTitle className="text-success">Tormentas Severas</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold text-success">0</p>
+              <p className="text-2xl font-bold text-success">{tormentas}</p>
               <p className="text-sm text-muted-foreground">
                 Eventos registrados
               </p>

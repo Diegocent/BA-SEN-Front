@@ -50,7 +50,7 @@ export default function GraficoMensual({
       const results = data.results;
 
       // 1. Pico Máximo - Mes con mayor unidades distribuidas
-      const picoMaximo = results.reduce((max, item) => {
+      const picoMaximo = results.reduce((max: any, item: any) => {
         return item.unidades_distribuidas > max.unidades_distribuidas
           ? item
           : max;
@@ -64,7 +64,7 @@ export default function GraficoMensual({
 
       // 3. Tendencia - Crecimiento anual (versión mejorada con regresión lineal)
       const datosPorAnio: Record<number, number> = {};
-      results.forEach((item) => {
+      results.forEach((item: any) => {
         if (!datosPorAnio[item.anio]) {
           datosPorAnio[item.anio] = 0;
         }
@@ -116,13 +116,15 @@ export default function GraficoMensual({
 
       // 4. Promedio - Eventos por mes (usando unidades_distribuidas como proxy de "eventos")
       const promedio =
-        results.reduce((sum, item) => sum + item.unidades_distribuidas, 0) /
-        results.length;
+        results.reduce(
+          (sum: number, item: any) => sum + item.unidades_distribuidas,
+          0
+        ) / results.length;
       setPromedio?.(Math.round(promedio * 100) / 100);
 
       // 5. Variabilidad - Desviación estándar de unidades distribuidas
       const media = promedio;
-      const sumaCuadrados = results.reduce((sum, item) => {
+      const sumaCuadrados = results.reduce((sum: number, item: any) => {
         return sum + Math.pow(item.unidades_distribuidas - media, 2);
       }, 0);
       const desviacionEstandar = Math.sqrt(sumaCuadrados / results.length);
