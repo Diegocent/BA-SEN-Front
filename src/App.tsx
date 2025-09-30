@@ -1,19 +1,22 @@
-"use client";
-
 import { useState } from "react";
 import { Sidebar } from "./components/layout/sidebar";
 import { MainContent } from "./components/layout/main-content";
 
 function App() {
   const [activeSection, setActiveSection] = useState("resumen");
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
     <div className="flex h-screen bg-background">
       <Sidebar
         activeSection={activeSection}
         onSectionChange={setActiveSection}
+        onToggleCollapse={setIsSidebarCollapsed}
       />
-      <MainContent activeSection={activeSection} />
+      <MainContent
+        activeSection={activeSection}
+        isSidebarCollapsed={isSidebarCollapsed}
+      />
     </div>
   );
 }

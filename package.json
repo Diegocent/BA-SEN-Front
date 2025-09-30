@@ -12,6 +12,7 @@
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.1",
+    "@radix-ui/react-tooltip": "^1.2.8",
     "@reduxjs/toolkit": "^2.9.0",
     "@types/react-redux": "^7.1.34",
     "class-variance-authority": "^0.7.1",

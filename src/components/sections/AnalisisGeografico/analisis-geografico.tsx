@@ -129,6 +129,7 @@ export function AnalisisGeografico() {
     error: any;
     isLoading: boolean;
   };
+  const [topDepartamento, setTopDepartamento] = useState<string>("");
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -201,6 +202,7 @@ export function AnalisisGeografico() {
               <GraficoTotalAyudasPorDepartamento
                 fecha_inicio={dateRange.startDate}
                 fecha_fin={dateRange.endDate}
+                setTopDepartamento={setTopDepartamento}
               />
             </motion.div>
           </CardContent>
@@ -265,24 +267,30 @@ export function AnalisisGeografico() {
         <div className="grid md:grid-cols-3 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-warning">
+              <CardTitle className="text-primary-dark">
                 Departamentos Atendidos
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold text-warning">0</p>
+              <p className="text-2xl font-bold text-primary-dark">
+                {dataDepartamento?.count || 0}
+              </p>
               <p className="text-sm text-muted-foreground">
-                De 17 departamentos
+                De 18 departamentos
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-info">Distritos Cubiertos</CardTitle>
+              <CardTitle className="text-primary-dark">
+                Distritos Cubiertos
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold text-info">0</p>
+              <p className="text-2xl font-bold text-primary-dark">
+                {dataDistrito?.count || 0}
+              </p>
               <p className="text-sm text-muted-foreground">
                 Distritos con asistencia
               </p>
@@ -291,12 +299,16 @@ export function AnalisisGeografico() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-success">Cobertura Rural</CardTitle>
+              <CardTitle className="text-primary-dark ">
+                Departamento mas asistido
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold text-success">0%</p>
+              <p className="text-xl font-bold text-primary-dark">
+                {topDepartamento || ""}
+              </p>
               <p className="text-sm text-muted-foreground">
-                Áreas rurales atendidas
+                Departamento con mayor cantidad de asistencias
               </p>
             </CardContent>
           </Card>

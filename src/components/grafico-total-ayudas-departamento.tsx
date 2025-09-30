@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactECharts from "echarts-for-react";
 import { useGetPorDepartamentoQuery } from "../api/geografica/geograficaApi";
 
@@ -17,9 +17,11 @@ const tiposAyuda = [
 export default function GraficoTotalAyudasPorDepartamento({
   fecha_inicio = "",
   fecha_fin = "",
+  setTopDepartamento,
 }: {
   fecha_inicio?: string;
   fecha_fin?: string;
+  setTopDepartamento?: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const { data, isLoading, isError } = useGetPorDepartamentoQuery({
     per_page: 50,
@@ -28,13 +30,22 @@ export default function GraficoTotalAyudasPorDepartamento({
       : {}),
   });
 
+  // Siempre se ejecuta este hook
+  const results = Array.isArray(data) ? data : data?.results || [];
+
+  useEffect(() => {
+    if (setTopDepartamento && results.length > 0) {
+      const top = results.reduce((max: any, d: any) =>
+        d.unidades_distribuidas > max.unidades_distribuidas ? d : max
+      );
+      setTopDepartamento(top.departamento);
+    }
+  }, [results, setTopDepartamento]);
+
+  // Ahora sí condicionar el render, después de los hooks
   if (isLoading) return <div>Cargando gráfico...</div>;
   if (isError || !data) return <div>Error al cargar los datos.</div>;
 
-  // Usar data.results para paginación DRF, o data directo si no existe results
-  const results = Array.isArray(data) ? data : data?.results || [];
-
-  // Sumar todos los tipos de ayuda por departamento
   const departamentos = results.map((d: any) => d.departamento);
   const totalAyudas = results.map((d: any) =>
     tiposAyuda.reduce((acc, tipo) => acc + (d[tipo] || 0), 0)
