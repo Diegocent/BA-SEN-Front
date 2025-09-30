@@ -11,11 +11,18 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "../ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "../../lib/utils";
 
 interface SidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
+  onToggleCollapse?: (isCollapsed: boolean) => void;
 }
 
 const navigationItems = [
@@ -62,9 +69,18 @@ const contactItems = [
   },
 ];
 
-export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
+export function Sidebar({
+  activeSection,
+  onSectionChange,
+  onToggleCollapse,
+}: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
+  const handleToggle = () => {
+    const newState = !isCollapsed;
+    setIsCollapsed(newState);
+    onToggleCollapse?.(newState);
+  };
   const sidebarVariants = {
     expanded: { width: "280px" },
     collapsed: { width: "80px" },
@@ -77,14 +93,18 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
 
   return (
     <motion.div
-      className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col"
+      className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col fixed left-0 top-0 z-50"
       variants={sidebarVariants}
       animate={isCollapsed ? "collapsed" : "expanded"}
       transition={{ duration: 0.3, ease: "easeInOut" }}
     >
       {/* Header */}
       <div className="p-4 border-b border-sidebar-border">
-        <div className="flex items-center justify-between">
+        <div
+          className={`flex items-center ${
+            isCollapsed ? "justify-center" : "justify-between"
+          }`}
+        >
           <AnimatePresence mode="wait">
             {!isCollapsed && (
               <motion.div
@@ -108,7 +128,7 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setIsCollapsed(!isCollapsed)}
+            onClick={handleToggle}
             className="h-8 w-8 text-sidebar-foreground hover:bg-sidebar-accent"
           >
             {isCollapsed ? (
@@ -204,14 +224,39 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
                           animate="expanded"
                           exit="collapsed"
                           transition={{ duration: 0.2 }}
-                          className="flex flex-col"
+                          className="flex flex-col min-w-0 overflow-hidden"
                         >
-                          <span className="text-xs font-medium">
-                            {item.label}
-                          </span>
-                          <span className="text-xs text-muted-foreground truncate">
-                            {item.value}
-                          </span>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <motion.div
+                                  variants={contentVariants}
+                                  initial="collapsed"
+                                  animate="expanded"
+                                  exit="collapsed"
+                                  transition={{ duration: 0.2 }}
+                                  className="flex flex-col min-w-0" // min-w-0 para permitir el truncado
+                                >
+                                  <span className="text-xs font-medium truncate">
+                                    {item.label}
+                                  </span>
+                                  <span className="text-xs text-muted-foreground truncate">
+                                    {item.value}
+                                  </span>
+                                </motion.div>
+                              </TooltipTrigger>
+                              <TooltipContent side="right">
+                                <div className="flex flex-col max-w-xs">
+                                  <span className="font-medium">
+                                    {item.label}
+                                  </span>
+                                  <span className="text-muted-foreground">
+                                    {item.value}
+                                  </span>
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </motion.div>
                       )}
                     </AnimatePresence>

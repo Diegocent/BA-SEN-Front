@@ -22,12 +22,31 @@ import {
   columnasMensualPDF,
 } from "./constants/constants";
 import VisualizarDetallesGenericos from "@/components/VisualizarDetallesGenericos";
+
+interface MetricasTemporales {
+  picoMaximo: { mes: string; anio: number; valor: number } | null;
+  tendencia: {
+    crecimiento: number;
+    direccion: "ascendente" | "descendente" | "estable";
+  } | null;
+  promedio: number | null;
+  variabilidad: number | null;
+}
+
 export function AnalisisTemporal() {
   // Filtro global de fechas
   const [dateRange, setDateRange] = useState<{
     startDate: string;
     endDate: string;
   }>({ startDate: "", endDate: "" });
+
+  // Estado para las métricas
+  const [metricas, setMetricas] = useState<MetricasTemporales>({
+    picoMaximo: null,
+    tendencia: null,
+    promedio: null,
+    variabilidad: null,
+  });
 
   // Estado para filtros y página para anual
   const [filtersAnual, setFiltersAnual] = useState<Record<string, any>>({});
@@ -129,6 +148,42 @@ export function AnalisisTemporal() {
     isLoading: boolean;
   };
 
+  // Función para formatear números grandes
+  const formatNumber = (num: number | null): string => {
+    if (num === null) return "-";
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + "M";
+    }
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1) + "K";
+    }
+    return num.toLocaleString();
+  };
+
+  // Función para obtener el color según la dirección de la tendencia
+  const getTendenciaColor = (direccion: string) => {
+    switch (direccion) {
+      case "ascendente":
+        return "text-success";
+      case "descendente":
+        return "text-danger";
+      default:
+        return "text-warning";
+    }
+  };
+
+  // Función para obtener el ícono de tendencia
+  const getTendenciaIcono = (direccion: string) => {
+    switch (direccion) {
+      case "ascendente":
+        return "↗";
+      case "descendente":
+        return "↘";
+      default:
+        return "→";
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -228,6 +283,18 @@ export function AnalisisTemporal() {
               <GraficoMensual
                 fecha_inicio={dateRange.startDate}
                 fecha_fin={dateRange.endDate}
+                setPicoMaximo={(value) =>
+                  setMetricas((prev) => ({ ...prev, picoMaximo: value }))
+                }
+                setTendencia={(value) =>
+                  setMetricas((prev) => ({ ...prev, tendencia: value }))
+                }
+                setPromedio={(value) =>
+                  setMetricas((prev) => ({ ...prev, promedio: value }))
+                }
+                setVariabilidad={(value) =>
+                  setMetricas((prev) => ({ ...prev, variabilidad: value }))
+                }
               />
             </CardContent>
           </Card>
@@ -250,15 +317,22 @@ export function AnalisisTemporal() {
           </CardContent>
         </Card>
 
+        {/* Métricas */}
         <div className="grid md:grid-cols-4 gap-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-warning">Pico Máximo</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xl font-bold text-warning">-</p>
+              <p className="text-xl font-bold text-warning">
+                {metricas.picoMaximo
+                  ? formatNumber(metricas.picoMaximo.valor)
+                  : "-"}
+              </p>
               <p className="text-sm text-muted-foreground">
-                Mes con más eventos
+                {metricas.picoMaximo
+                  ? `${metricas.picoMaximo.mes} ${metricas.picoMaximo.anio}`
+                  : "Mes con más eventos"}
               </p>
             </CardContent>
           </Card>
@@ -268,8 +342,24 @@ export function AnalisisTemporal() {
               <CardTitle className="text-success">Tendencia</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xl font-bold text-success">-</p>
-              <p className="text-sm text-muted-foreground">Crecimiento anual</p>
+              <p
+                className={`text-xl font-bold ${
+                  metricas.tendencia
+                    ? getTendenciaColor(metricas.tendencia.direccion)
+                    : "text-success"
+                }`}
+              >
+                {metricas.tendencia
+                  ? `${getTendenciaIcono(metricas.tendencia.direccion)} ${
+                      metricas.tendencia.crecimiento
+                    }%`
+                  : "-"}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {metricas.tendencia
+                  ? `Crecimiento ${metricas.tendencia.direccion}`
+                  : "Crecimiento anual"}
+              </p>
             </CardContent>
           </Card>
 
@@ -278,7 +368,9 @@ export function AnalisisTemporal() {
               <CardTitle className="text-info">Promedio</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xl font-bold text-info">-</p>
+              <p className="text-xl font-bold text-info">
+                {metricas.promedio ? formatNumber(metricas.promedio) : "-"}
+              </p>
               <p className="text-sm text-muted-foreground">Eventos por mes</p>
             </CardContent>
           </Card>
@@ -288,7 +380,11 @@ export function AnalisisTemporal() {
               <CardTitle className="text-danger">Variabilidad</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xl font-bold text-danger">-</p>
+              <p className="text-xl font-bold text-danger">
+                {metricas.variabilidad
+                  ? formatNumber(metricas.variabilidad)
+                  : "-"}
+              </p>
               <p className="text-sm text-muted-foreground">
                 Desviación estándar
               </p>
