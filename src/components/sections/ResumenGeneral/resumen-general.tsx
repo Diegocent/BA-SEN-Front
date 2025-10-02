@@ -54,11 +54,17 @@ export function ResumenGeneral() {
   const [pdfParam, setPdfParam] = useState({});
 
   useEffect(() => {
-    if (filtersWithoutPage && dateRange.startDate && dateRange.endDate) {
-      setPdfParam({ ...filtersWithoutPage, ...dateParams });
-    } else {
-      setPdfParam({});
+    let dataParams = {};
+    if (dateRange.startDate && dateRange.endDate) {
+      dataParams = {
+        fecha_desde: dateRange.startDate,
+        fecha_hasta: dateRange.endDate,
+      };
     }
+    if (filtersWithoutPage) {
+      dataParams = { ...filtersWithoutPage, ...dataParams };
+    }
+    setPdfParam(dataParams);
   }, [filters, dateRange]);
 
   // Consulta con filtros y página y fechas
