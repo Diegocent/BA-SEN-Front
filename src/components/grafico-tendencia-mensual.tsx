@@ -67,16 +67,16 @@ export default function GraficoTendenciaMensual({
       name: "Mes",
       nameLocation: "middle",
       nameGap: 55,
-      axisLabel: { fontSize: 14, rotate: 30 },
-      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
+      axisLabel: { fontSize: 12, rotate: 30 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     yAxis: {
       type: "value",
       name: "Cantidad de asistencias",
       nameLocation: "middle",
       nameGap: 40,
-      axisLabel: { fontSize: 14 },
-      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
+      axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     series: [
       {

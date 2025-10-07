@@ -44,8 +44,6 @@ export default function HeatmapDepartamentoAnio({
     new Set(results.map((item: any) => item.anio))
   ).sort();
 
-  // Construir la matriz de valores para el heatmap
-  // ECharts espera datos como [xIndex, yIndex, value]
   const dataMatrix: [number, number, number][] = [];
   results.forEach((item: any) => {
     const deptoIdx = departamentos.indexOf(item.departamento);
@@ -78,10 +76,10 @@ export default function HeatmapDepartamentoAnio({
       data: anios,
       name: "Año",
       splitArea: { show: true },
-      axisLabel: { rotate: 0 },
+      axisLabel: { rotate: 0, fontSize: 12 },
       nameLocation: "middle",
       nameGap: 40,
-      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     yAxis: {
       type: "category",
@@ -90,7 +88,8 @@ export default function HeatmapDepartamentoAnio({
       splitArea: { show: true },
       nameLocation: "middle",
       nameGap: 90,
-      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
+      axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     visualMap: {
       min: 0,
@@ -98,7 +97,7 @@ export default function HeatmapDepartamentoAnio({
       calculable: true,
       orient: "horizontal",
       left: "center",
-      bottom: 45,
+      bottom: 25,
       inRange: {
         color: ["#fee2e2", "#fca5a5", "#ef4444", "#991b1b"],
       },
@@ -123,14 +122,18 @@ export default function HeatmapDepartamentoAnio({
     ],
     toolbox: {
       feature: {
-        saveAsImage: { pixelRatio: 2, title: "Descargar imagen" },
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Heatmap_Departamento_Anio",
+        },
       },
       right: 10,
     },
   };
 
   return (
-    <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
+    <div style={{ background: "#fff", borderRadius: 8, padding: 0 }}>
       <ReactECharts
         option={option}
         style={{ height: 450 }}

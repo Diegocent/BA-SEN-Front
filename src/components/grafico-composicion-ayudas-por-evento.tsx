@@ -48,36 +48,43 @@ export default function GraficoComposicionAyudasPorEvento({
 
   const option = {
     tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
-    legend: { bottom: 10 },
-    grid: { left: 80, right: 20, bottom: 50, top: 20, containLabel: true },
+    legend: { bottom: 0, textStyle: { fontSize: 10 } },
+    grid: { left: 25, right: 20, bottom: 50, top: 20, containLabel: true },
     xAxis: {
       type: "category",
       data: eventos,
       name: "Evento",
       nameLocation: "middle",
-      nameGap: 75,
-      axisLabel: { rotate: 30 },
+      nameGap: 60,
+      axisLabel: { rotate: 30, fontSize: 10 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     yAxis: {
       type: "value",
-      name: "Cantidad de ayudas",
+      name: "Unidades distribuidas",
       nameLocation: "middle",
-      nameGap: 60,
+      nameGap: 65,
+      axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     series,
     toolbox: {
       feature: {
-        saveAsImage: { pixelRatio: 2, title: "Descargar imagen" },
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Composicion_asistencias_por_Evento",
+        },
       },
       right: 10,
     },
   };
 
   return (
-    <div style={{ background: "#fff", borderRadius: 8, padding: 2 }}>
+    <div style={{ background: "#fff", borderRadius: 8, padding: 0 }}>
       <ReactECharts
         option={option}
-        style={{ height: 400 }}
+        style={{ height: 380 }}
         opts={{ renderer: "canvas", devicePixelRatio: 2 }}
       />
     </div>

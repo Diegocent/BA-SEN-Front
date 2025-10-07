@@ -47,16 +47,16 @@ export default function GraficoDistribucionAnualProducto({
       name: "Año",
       nameLocation: "middle",
       nameGap: 30,
-      axisLabel: { fontSize: 14 },
-      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
+      axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     yAxis: {
       type: "value",
-      name: "Cantidad",
+      name: "Unidades distribuidas",
       nameLocation: "middle",
-      nameGap: 50,
-      axisLabel: { fontSize: 14 },
-      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
+      nameGap: 55,
+      axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     series: [
       {

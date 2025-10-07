@@ -119,7 +119,11 @@ export default function GraficoPieEventos({
     ],
     toolbox: {
       feature: {
-        saveAsImage: { pixelRatio: 2, title: "Descargar imagen" },
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Eventos_por_tipo",
+        },
       },
       right: 10,
     },

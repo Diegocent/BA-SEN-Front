@@ -286,7 +286,8 @@ export function AnalisisEventos() {
                 Comparacion de eventos por año
               </CardTitle>
               <CardDescription>
-                Este grafico contiene la cantidad de eventos registrados por año
+                Este grafico contiene la comparativa de eventos registrados por
+                año
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -303,7 +304,7 @@ export function AnalisisEventos() {
                 Tendencia mensual de eventos
               </CardTitle>
               <CardDescription>
-                Grafico que muestra la tendencia mensual de eventos
+                Grafico que muestra la tendencia mensual del evento seleccionado
               </CardDescription>
             </CardHeader>
             <CardContent>

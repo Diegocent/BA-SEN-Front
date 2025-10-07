@@ -99,26 +99,47 @@ export default function GraficoEvolucionAyudasTopDepartamentos({
         return str;
       },
     },
-    legend: { top: 0 },
+    legend: {
+      bottom: 0,
+      textStyle: { fontSize: 12 },
+      itemWidth: 18,
+      itemHeight: 12,
+    },
     xAxis: {
       type: "category",
       data: anios,
       nameLocation: "middle",
       name: "Año",
       nameGap: 40,
-      axisLabel: { fontSize: 14 },
-      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
+      axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     yAxis: {
       type: "value",
-      name: "Total ayudas",
+      name: "Total asistencias",
       nameLocation: "middle",
       nameGap: 65,
-      axisLabel: { fontSize: 14 },
-      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
+      axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     series,
-    grid: { left: "8%", right: "4%", bottom: "10%", containLabel: true },
+    grid: {
+      top: "10%",
+      left: "8%",
+      right: "4%",
+      bottom: "15%",
+      containLabel: true,
+    },
+    toolbox: {
+      feature: {
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Evolucion_asistencias_Top_Departamentos",
+        },
+      },
+      right: 10,
+    },
   };
 
   return (

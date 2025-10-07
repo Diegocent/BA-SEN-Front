@@ -264,12 +264,13 @@ export function AnalisisTemporal() {
           <Card>
             <CardHeader>
               <CardTitle className="text-primary">Análisis por Año</CardTitle>
-              <CardDescription>Distribución anual de eventos</CardDescription>
+              <CardDescription>Distribución anual de productos</CardDescription>
             </CardHeader>
             <CardContent>
               <GraficoAnualAyudas
                 fecha_inicio={dateRange.startDate}
                 fecha_fin={dateRange.endDate}
+                height={320}
               />
             </CardContent>
           </Card>

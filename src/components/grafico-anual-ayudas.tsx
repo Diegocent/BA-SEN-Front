@@ -5,9 +5,11 @@ import { useGetAnualQuery } from "@/api";
 export default function GraficoAnualAyudas({
   fecha_inicio = "",
   fecha_fin = "",
+  height = 400,
 }: {
   fecha_inicio?: string;
   fecha_fin?: string;
+  height?: number;
 }) {
   const { data, isLoading, error } = useGetAnualQuery({
     per_page: 100,
@@ -61,8 +63,8 @@ export default function GraficoAnualAyudas({
     tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
     legend: {
       bottom: 0,
-      textStyle: { fontSize: 14 },
-      icon: "rect",
+      textStyle: { fontSize: 10 },
+      icon: "roundRect",
       itemWidth: 18,
       itemHeight: 12,
     },
@@ -73,16 +75,16 @@ export default function GraficoAnualAyudas({
       name: "Año",
       nameLocation: "middle",
       nameGap: 18,
-      axisLabel: { fontSize: 14, rotate: 0 },
-      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
+      axisLabel: { fontSize: 12, rotate: 0 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     yAxis: {
       type: "value",
       name: "Unidades distribuidas",
       nameLocation: "middle",
-      nameGap: 80,
-      axisLabel: { fontSize: 14 },
-      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
+      nameGap: 65,
+      axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     series,
     toolbox: {
@@ -98,10 +100,10 @@ export default function GraficoAnualAyudas({
   };
 
   return (
-    <div style={{ background: "#fff", borderRadius: 8, padding: 8 }}>
+    <div style={{ background: "#fff", borderRadius: 8, padding: 0 }}>
       <ReactECharts
         option={option}
-        style={{ height: 320 }}
+        style={{ height }}
         opts={{ devicePixelRatio: 2 }}
       />
     </div>

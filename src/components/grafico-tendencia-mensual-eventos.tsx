@@ -65,23 +65,23 @@ export default function GraficoTendenciaMensualEventos({
       itemWidth: 18,
       itemHeight: 12,
     },
-    grid: { left: 60, right: 20, bottom: 60, top: 30, containLabel: true },
+    grid: { left: "8%", right: "3%", bottom: 60, top: 30, containLabel: true },
     xAxis: {
       type: "category",
       data: labels,
       name: "Mes",
       nameLocation: "middle",
       nameGap: 109,
-      axisLabel: { fontSize: 14, rotate: 45 },
-      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
+      axisLabel: { fontSize: 12, rotate: 45 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     yAxis: {
       type: "value",
       name: "Cantidad de eventos",
       nameLocation: "middle",
-      nameGap: 60,
-      axisLabel: { fontSize: 14 },
-      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
+      nameGap: 45,
+      axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     series: [
       {
@@ -94,14 +94,18 @@ export default function GraficoTendenciaMensualEventos({
     ],
     toolbox: {
       feature: {
-        saveAsImage: { pixelRatio: 2, title: "Descargar imagen" },
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Tendencia_mensual_eventos",
+        },
       },
       right: 10,
     },
   };
 
   return (
-    <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
+    <div style={{ background: "#fff", borderRadius: 8, padding: 0 }}>
       <div style={{ marginBottom: 0 }}>
         <label style={{ marginRight: 8 }}>Evento:</label>
         <select value={evento} onChange={(e) => setEvento(e.target.value)}>

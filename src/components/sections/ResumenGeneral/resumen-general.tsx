@@ -14,7 +14,6 @@ import {
   useAsistenciaDetalladaQuery,
 } from "../../../api";
 import { useEffect, useState } from "react";
-import GraficoDistribucionAyudasPorAnio from "../../grafico-distribucion-ayudas-anio";
 import GraficoDistribucionAyudasPorDepartamento from "../../grafico-distribucion-ayudas-departamento";
 import GraficoPieEventos from "../../grafico-pie-eventos";
 import GraficoTendenciaMensual from "../../grafico-tendencia-mensual";
@@ -22,6 +21,7 @@ import { generateTablePDF } from "@/lib/pdfUtils";
 import { ObtenerTotalData } from "@/hooks/obtenerTotalData";
 import { columnasRegistros, columnasReportes } from "./constants/constants";
 import VisualizarDetallesGenericos from "@/components/VisualizarDetallesGenericos";
+import GraficoAnualAyudas from "@/components/grafico-anual-ayudas";
 
 type ResumenGeneralData = {
   cantidad_departamentos: number;
@@ -276,7 +276,7 @@ export function ResumenGeneral() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-primary">
-                  Distribución de ayudas por año
+                  Distribución de asistencias por año
                 </CardTitle>
                 <CardDescription>
                   Grafico que muestra la cantidad de unidades distribuidas por
@@ -284,9 +284,10 @@ export function ResumenGeneral() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <GraficoDistribucionAyudasPorAnio
+                <GraficoAnualAyudas
                   fecha_inicio={dateRange.startDate}
                   fecha_fin={dateRange.endDate}
+                  height={400}
                 />
               </CardContent>
             </Card>
@@ -294,7 +295,7 @@ export function ResumenGeneral() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-info">
-                  Distribución de ayudas por departamento
+                  Distribución de asistencias por departamento
                 </CardTitle>
                 <CardDescription>
                   Grafico que muestra la cantidad de unidades distribuidas por

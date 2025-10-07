@@ -50,6 +50,7 @@ export default function GraficoTotalAyudasPorDepartamento({
   const totalAyudas = results.map((d: any) =>
     tiposAyuda.reduce((acc, tipo) => acc + (d[tipo] || 0), 0)
   );
+  const sumaTotal = totalAyudas.reduce((a: number, b: number) => a + b, 0);
 
   const option = {
     tooltip: {
@@ -57,25 +58,28 @@ export default function GraficoTotalAyudasPorDepartamento({
       axisPointer: { type: "shadow" },
       formatter: (params: any) => {
         const p = params[0];
-        return `${p.axisValue}<br/>Total de productos distribuidos: <b>${p.data}</b>`;
+        const porcentaje = sumaTotal
+          ? ((p.data / sumaTotal) * 100).toFixed(1)
+          : 0;
+        return `${p.axisValue}<br/>Total de productos distribuidos: <b>${p.data}</b><br/>Porcentaje: <b>${porcentaje}%</b>`;
       },
     },
     xAxis: {
       type: "category",
       data: departamentos,
-      axisLabel: { rotate: 30 },
+      axisLabel: { rotate: 30, fontSize: 12 },
       nameLocation: "middle",
       name: "Departamentos",
       nameGap: 65,
-      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     yAxis: {
       type: "value",
-      name: "Total de productos distribuidos",
+      name: "Total de unidades distribuidas",
       nameLocation: "middle",
-      nameGap: 85,
-      axisLabel: { fontSize: 14 },
-      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
+      nameGap: 75,
+      axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     series: [
       {
@@ -87,14 +91,30 @@ export default function GraficoTotalAyudasPorDepartamento({
           show: true,
           position: "top",
           fontWeight: "bold",
+          formatter: function (params: any) {
+            const porcentaje = sumaTotal
+              ? ((params.data / sumaTotal) * 100).toFixed(1)
+              : 0;
+            return `${porcentaje}%`;
+          },
         },
       },
     ],
-    grid: { left: "3%", right: "4%", bottom: "10%", containLabel: true },
+    grid: { left: "5%", right: "4%", bottom: "10%", containLabel: true },
+    toolbox: {
+      feature: {
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Total_asistencias_por_departamento",
+        },
+      },
+      right: 10,
+    },
   };
 
   return (
-    <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
+    <div style={{ background: "#fff", borderRadius: 8, padding: 0 }}>
       <ReactECharts option={option} style={{ height: 400 }} />
     </div>
   );
