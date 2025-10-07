@@ -61,6 +61,16 @@ export default function GraficoAyudasPorEvento({
         },
       },
     ],
+    toolbox: {
+      feature: {
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Asistencias_por_evento",
+        },
+      },
+      right: 10,
+    },
   };
 
   return (

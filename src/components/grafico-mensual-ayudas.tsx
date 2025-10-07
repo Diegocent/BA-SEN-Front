@@ -170,33 +170,65 @@ export default function GraficoMensual({
   }));
 
   const option = {
-    tooltip: {
-      trigger: "axis",
-    },
+    backgroundColor: "#fff",
+    color: [
+      "#5470C6",
+      "#91CC75",
+      "#EE6666",
+      "#FAC858",
+      "#73C0DE",
+      "#3BA272",
+      "#FC8452",
+      "#9A60B4",
+      "#EA7CCC",
+    ],
+    tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
     legend: {
-      top: 10,
+      bottom: 10,
+      textStyle: { fontSize: 14 },
+      icon: "rect",
+      itemWidth: 18,
+      itemHeight: 12,
       data: availableYears,
     },
-    grid: { left: 40, right: 20, bottom: 50, top: 50, containLabel: true },
+    grid: { left: 40, right: 20, bottom: 60, top: 30, containLabel: true },
     xAxis: {
       type: "category",
       data: monthLabels,
       name: "Mes",
       nameLocation: "middle",
       nameGap: 30,
+      axisLabel: { fontSize: 14, rotate: 0 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
     },
     yAxis: {
       type: "value",
       name: "Cantidad de ayudas",
       nameLocation: "middle",
-      nameGap: 40,
+      nameGap: 65,
+      axisLabel: { fontSize: 14 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
     },
     series,
+    toolbox: {
+      feature: {
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Asistencias_mensuales",
+        },
+      },
+      right: 10,
+    },
   };
 
   return (
     <div style={{ background: "#fff", borderRadius: 8, padding: 8 }}>
-      <ReactECharts option={option} style={{ height: 320 }} />
+      <ReactECharts
+        option={option}
+        style={{ height: 320 }}
+        opts={{ devicePixelRatio: 2 }}
+      />
     </div>
   );
 }

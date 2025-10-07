@@ -64,16 +64,24 @@ export default function GraficoTotalAyudasPorDepartamento({
       type: "category",
       data: departamentos,
       axisLabel: { rotate: 30 },
+      nameLocation: "middle",
+      name: "Departamentos",
+      nameGap: 65,
+      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
     },
     yAxis: {
       type: "value",
       name: "Total de productos distribuidos",
+      nameLocation: "middle",
+      nameGap: 85,
+      axisLabel: { fontSize: 14 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
     },
     series: [
       {
         data: totalAyudas,
         type: "bar",
-        color: "#10b981",
+        color: "#6c71d5",
         barWidth: 24,
         label: {
           show: true,

@@ -62,13 +62,20 @@ export default function GraficoComparacionEventosAnio({
       nameGap: 60,
     },
     series,
+    toolbox: {
+      feature: {
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Comparacion_eventos_anio",
+        },
+      },
+      right: 10,
+    },
   };
 
   return (
     <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
-      <h3 style={{ marginBottom: 8 }}>
-        Comparación de eventos por año (barras agrupadas)
-      </h3>
       <ReactECharts
         option={option}
         style={{ height: 400 }}

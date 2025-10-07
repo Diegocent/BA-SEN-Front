@@ -7,7 +7,7 @@ function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="bg-background">
       <Sidebar
         activeSection={activeSection}
         onSectionChange={setActiveSection}

@@ -47,12 +47,16 @@ export default function GraficoDistribucionAnualProducto({
       name: "Año",
       nameLocation: "middle",
       nameGap: 30,
+      axisLabel: { fontSize: 14 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
     },
     yAxis: {
       type: "value",
       name: "Cantidad",
       nameLocation: "middle",
-      nameGap: 40,
+      nameGap: 50,
+      axisLabel: { fontSize: 14 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
     },
     series: [
       {
@@ -68,6 +72,16 @@ export default function GraficoDistribucionAnualProducto({
         },
       },
     ],
+    toolbox: {
+      feature: {
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: `Distribucion_anual_${producto}`,
+        },
+      },
+      right: 10,
+    },
   };
 
   return (

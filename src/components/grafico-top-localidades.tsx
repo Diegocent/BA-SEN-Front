@@ -48,10 +48,15 @@ export default function GraficoTopLocalidades({
       nameLocation: "middle",
       nameGap: 30,
       axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
     },
     yAxis: {
       type: "category",
       data: localidades,
+      name: "Localidades",
+      nameLocation: "middle",
+      nameGap: 120,
+      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
       axisLabel: { rotate: 0, fontSize: 12 },
     },
     series: [

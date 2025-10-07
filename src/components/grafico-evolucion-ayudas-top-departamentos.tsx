@@ -103,18 +103,26 @@ export default function GraficoEvolucionAyudasTopDepartamentos({
     xAxis: {
       type: "category",
       data: anios,
+      nameLocation: "middle",
       name: "Año",
+      nameGap: 40,
+      axisLabel: { fontSize: 14 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
     },
     yAxis: {
       type: "value",
       name: "Total ayudas",
+      nameLocation: "middle",
+      nameGap: 65,
+      axisLabel: { fontSize: 14 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
     },
     series,
-    grid: { left: "3%", right: "4%", bottom: "10%", containLabel: true },
+    grid: { left: "8%", right: "4%", bottom: "10%", containLabel: true },
   };
 
   return (
-    <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
+    <div style={{ background: "#fff", borderRadius: 8, padding: 0 }}>
       <ReactECharts option={option} style={{ height: 400 }} />
     </div>
   );

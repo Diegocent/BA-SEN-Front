@@ -65,6 +65,12 @@ export default function GraficoComposicionAyudasPorEvento({
       nameGap: 60,
     },
     series,
+    toolbox: {
+      feature: {
+        saveAsImage: { pixelRatio: 2, title: "Descargar imagen" },
+      },
+      right: 10,
+    },
   };
 
   return (

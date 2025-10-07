@@ -303,7 +303,7 @@ export function AnalisisTemporal() {
         <Card>
           <CardHeader>
             <CardTitle className="text-success">
-              Distribución anual de ayuda principal
+              Distribución anual de asistencia principal
             </CardTitle>
             <CardDescription>
               Selecciona el producto para ver su evolución anual

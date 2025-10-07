@@ -32,21 +32,51 @@ export default function GraficoTendenciaMensual({
   );
 
   const option = {
+    backgroundColor: "#fff",
+    color: [
+      "#5470C6",
+      "#91CC75",
+      "#EE6666",
+      "#FAC858",
+      "#73C0DE",
+      "#3BA272",
+      "#FC8452",
+      "#9A60B4",
+      "#EA7CCC",
+    ],
     tooltip: {
       trigger: "axis",
+      axisPointer: { type: "shadow" },
       formatter: (params: any) => {
         const p = params[0];
         return `${p.axisValue}<br/>Asistencias: <b>${p.data}</b>`;
       },
     },
+    legend: {
+      show: false,
+      bottom: 10,
+      textStyle: { fontSize: 14 },
+      icon: "rect",
+      itemWidth: 18,
+      itemHeight: 12,
+    },
+    grid: { left: 60, right: 20, bottom: 60, top: 30, containLabel: true },
     xAxis: {
       type: "category",
       data: xData,
-      axisLabel: { rotate: 30 },
+      name: "Mes",
+      nameLocation: "middle",
+      nameGap: 55,
+      axisLabel: { fontSize: 14, rotate: 30 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
     },
     yAxis: {
       type: "value",
       name: "Cantidad de asistencias",
+      nameLocation: "middle",
+      nameGap: 40,
+      axisLabel: { fontSize: 14 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
     },
     series: [
       {
@@ -55,23 +85,30 @@ export default function GraficoTendenciaMensual({
         smooth: true,
         symbol: "circle",
         symbolSize: 8,
-        // Sin área de relleno
-        lineStyle: { width: 1 },
-        color: "#3b82f6",
+        areaStyle: {},
+        lineStyle: { width: 2 },
+        label: { show: false },
       },
     ],
-    grid: {
-      left: "4%",
-      right: "4%",
-      top: "8%",
-      bottom: "10%",
-      containLabel: true,
+    toolbox: {
+      feature: {
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Tendencia_mensual",
+        },
+      },
+      right: 10,
     },
   };
 
   return (
     <div style={{ background: "#fff", borderRadius: 8, padding: 2 }}>
-      <ReactECharts option={option} style={{ height: 400 }} />
+      <ReactECharts
+        option={option}
+        style={{ height: 400 }}
+        opts={{ devicePixelRatio: 2 }}
+      />
     </div>
   );
 }

@@ -46,28 +46,64 @@ export default function GraficoAnualAyudas({
   }));
 
   const option = {
+    backgroundColor: "#fff",
+    color: [
+      "#5470C6",
+      "#91CC75",
+      "#EE6666",
+      "#FAC858",
+      "#73C0DE",
+      "#3BA272",
+      "#FC8452",
+      "#9A60B4",
+      "#EA7CCC",
+    ],
     tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
-    legend: { bottom: 10 },
-    grid: { left: 40, right: 20, bottom: 50, top: 10, containLabel: true },
+    legend: {
+      bottom: 0,
+      textStyle: { fontSize: 14 },
+      icon: "rect",
+      itemWidth: 18,
+      itemHeight: 12,
+    },
+    grid: { left: 40, right: 20, bottom: 60, top: 30, containLabel: true },
     xAxis: {
       type: "category",
       data: anios,
       name: "Año",
       nameLocation: "middle",
-      nameGap: 30,
+      nameGap: 18,
+      axisLabel: { fontSize: 14, rotate: 0 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
     },
     yAxis: {
       type: "value",
-      name: "unidades_distribuidas",
+      name: "Unidades distribuidas",
       nameLocation: "middle",
-      nameGap: 40,
+      nameGap: 80,
+      axisLabel: { fontSize: 14 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
     },
     series,
+    toolbox: {
+      feature: {
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Asistencias_anuales",
+        },
+      },
+      right: 10,
+    },
   };
 
   return (
     <div style={{ background: "#fff", borderRadius: 8, padding: 8 }}>
-      <ReactECharts option={option} style={{ height: 320 }} />
+      <ReactECharts
+        option={option}
+        style={{ height: 320 }}
+        opts={{ devicePixelRatio: 2 }}
+      />
     </div>
   );
 }

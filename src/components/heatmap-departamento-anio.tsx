@@ -68,8 +68,8 @@ export default function HeatmapDepartamentoAnio({
     },
     grid: {
       height: "60%",
-      top: 40,
-      left: 100,
+      top: 20,
+      left: "11%",
       right: 40,
       bottom: 40,
     },
@@ -79,12 +79,18 @@ export default function HeatmapDepartamentoAnio({
       name: "Año",
       splitArea: { show: true },
       axisLabel: { rotate: 0 },
+      nameLocation: "middle",
+      nameGap: 40,
+      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
     },
     yAxis: {
       type: "category",
       data: departamentos,
       name: "Departamento",
       splitArea: { show: true },
+      nameLocation: "middle",
+      nameGap: 90,
+      nameTextStyle: { fontWeight: "bold", fontSize: 16 },
     },
     visualMap: {
       min: 0,
@@ -92,7 +98,7 @@ export default function HeatmapDepartamentoAnio({
       calculable: true,
       orient: "horizontal",
       left: "center",
-      bottom: 10,
+      bottom: 45,
       inRange: {
         color: ["#fee2e2", "#fca5a5", "#ef4444", "#991b1b"],
       },
@@ -115,11 +121,21 @@ export default function HeatmapDepartamentoAnio({
         },
       },
     ],
+    toolbox: {
+      feature: {
+        saveAsImage: { pixelRatio: 2, title: "Descargar imagen" },
+      },
+      right: 10,
+    },
   };
 
   return (
     <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
-      <ReactECharts option={option} style={{ height: 500 }} />
+      <ReactECharts
+        option={option}
+        style={{ height: 450 }}
+        opts={{ devicePixelRatio: 2 }}
+      />
     </div>
   );
 }
