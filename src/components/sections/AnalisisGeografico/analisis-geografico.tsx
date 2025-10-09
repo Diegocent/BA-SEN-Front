@@ -252,7 +252,7 @@ export function AnalisisGeografico() {
               Mapa de calor de departamentos por año
             </CardTitle>
             <CardDescription>
-              Mapa que muestra la cantidad de asistencias segun año y
+              Mapa que muestra la cantidad de unidades distribuidas segun año y
               departamento
             </CardDescription>
           </CardHeader>

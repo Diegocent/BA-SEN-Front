@@ -65,7 +65,7 @@ export default function HeatmapDepartamentoAnio({
       },
     },
     grid: {
-      height: "60%",
+      height: "80%", // Más área para las celdas
       top: 20,
       left: "11%",
       right: 40,
@@ -76,7 +76,7 @@ export default function HeatmapDepartamentoAnio({
       data: anios,
       name: "Año",
       splitArea: { show: true },
-      axisLabel: { rotate: 0, fontSize: 12 },
+      axisLabel: { rotate: 0, fontSize: 12, interval: 0 },
       nameLocation: "middle",
       nameGap: 40,
       nameTextStyle: { fontWeight: "bold", fontSize: 14 },
@@ -88,7 +88,7 @@ export default function HeatmapDepartamentoAnio({
       splitArea: { show: true },
       nameLocation: "middle",
       nameGap: 90,
-      axisLabel: { fontSize: 12 },
+      axisLabel: { fontSize: 12, interval: 0 },
       nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     visualMap: {
@@ -136,7 +136,7 @@ export default function HeatmapDepartamentoAnio({
     <div style={{ background: "#fff", borderRadius: 8, padding: 0 }}>
       <ReactECharts
         option={option}
-        style={{ height: 450 }}
+        style={{ height: 550 }} // Más alto para celdas más grandes
         opts={{ devicePixelRatio: 2 }}
       />
     </div>
