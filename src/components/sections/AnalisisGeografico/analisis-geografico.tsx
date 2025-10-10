@@ -331,7 +331,6 @@ export function AnalisisGeografico() {
                 }
               }
               columns={columnasDepartamentos}
-              searchPlaceHolder="Buscar departamento..."
               title="Resumen por Departamento"
               subtitle="Datos consolidados de asistencia humanitaria por departamento"
               onViewDetails={VisualizarDetallesGenericos}
@@ -361,7 +360,6 @@ export function AnalisisGeografico() {
                 }
               }
               columns={columnasDistritos}
-              searchPlaceHolder="Buscar distrito..."
               title="Resumen por Distrito"
               subtitle="Datos detallados de asistencia humanitaria por distrito"
               onViewDetails={VisualizarDetallesGenericos}

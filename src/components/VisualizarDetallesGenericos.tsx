@@ -1,4 +1,3 @@
-import type React from "react";
 import { FileText } from "lucide-react";
 import {
   useGenerarReporteGenerico,

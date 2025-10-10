@@ -1,6 +1,5 @@
-import React from "react";
 import ReactECharts from "echarts-for-react";
-import { useAsistenciasPorAnioDepartamentoQuery } from "../api/geografica/geograficaApi";
+import { useAsistenciasPorAnioDepartamentoQuery } from "../api";
 
 export default function HeatmapDepartamentoAnio({
   fecha_inicio = "",

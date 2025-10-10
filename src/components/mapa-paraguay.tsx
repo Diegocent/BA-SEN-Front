@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect, useRef } from "react";
 import { useResumenPorDepartamentoQuery } from "../api";
 import { motion } from "framer-motion";

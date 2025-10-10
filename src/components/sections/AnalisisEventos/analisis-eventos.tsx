@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "framer-motion";
 import {
   Card,
@@ -333,7 +331,6 @@ export function AnalisisEventos() {
                 }
               }
               columns={columnasTipoEventos}
-              searchPlaceHolder="Buscar tipo de evento..."
               title="Resumen por Tipo de Eventos"
               subtitle="Datos consolidados de asistencia humanitaria por tipo de evento"
               onViewDetails={VisualizarDetallesGenericos}
@@ -363,7 +360,6 @@ export function AnalisisEventos() {
                 }
               }
               columns={columnasEventosDepartamento}
-              searchPlaceHolder="Buscar departamento..."
               title="Eventos por Departamento"
               subtitle="Distribución de eventos de emergencia por departamento"
               onViewDetails={VisualizarDetallesGenericos}

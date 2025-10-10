@@ -1,5 +1,3 @@
-"use client";
-
 import type React from "react";
 import { useState } from "react";
 import { Button } from "./ui/button";
@@ -31,8 +29,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Search,
-  FilterList,
-  Print,
   Close,
 } from "@mui/icons-material";
 import { formatCell } from "@/lib/formatCell";
@@ -61,7 +57,6 @@ export interface DataTableProps {
   columns: Column[];
   onViewDetails: (item: any) => React.ReactNode;
   itemsPerPage?: number;
-  searchPlaceHolder?: string;
   onPageChange?: (url: string) => void;
   filters: Record<string, any>;
   setFilters: (filters: Record<string, any>) => void;
@@ -77,7 +72,6 @@ export function DataTable(props: DataTableProps) {
     columns,
     onViewDetails,
     itemsPerPage = 10,
-    searchPlaceHolder = "Buscar...",
     onPageChange,
     filters,
     setFilters,
