@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ReactECharts from "echarts-for-react";
 import { useTendenciaMensualAsistenciasQuery } from "@/api";
 
@@ -44,38 +44,69 @@ export default function GraficoTendenciaMensualEventos({
   const valores = sorted.map((item) => item.numero_asistencias || 0);
 
   const option = {
-    tooltip: { trigger: "axis" },
-    grid: { left: 80, right: 20, bottom: 50, top: 50, containLabel: true },
+    backgroundColor: "#fff",
+    color: [
+      "#5470C6",
+      "#91CC75",
+      "#EE6666",
+      "#FAC858",
+      "#73C0DE",
+      "#3BA272",
+      "#FC8452",
+      "#9A60B4",
+      "#EA7CCC",
+    ],
+    tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
+    legend: {
+      show: false,
+      bottom: 10,
+      textStyle: { fontSize: 14 },
+      icon: "rect",
+      itemWidth: 18,
+      itemHeight: 12,
+    },
+    grid: { left: "8%", right: "3%", bottom: 60, top: 30, containLabel: true },
     xAxis: {
       type: "category",
       data: labels,
       name: "Mes",
       nameLocation: "middle",
-      nameGap: 30,
-      axisLabel: { rotate: 45 },
+      nameGap: 109,
+      axisLabel: { fontSize: 12, rotate: 45 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     yAxis: {
       type: "value",
       name: "Cantidad de eventos",
       nameLocation: "middle",
-      nameGap: 60,
+      nameGap: 45,
+      axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     series: [
       {
         data: valores,
         type: "line",
         smooth: true,
-        color: "#10b981",
-        label: {
-          show: false,
-        },
+        areaStyle: {},
+        label: { show: false },
       },
     ],
+    toolbox: {
+      feature: {
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Tendencia_mensual_eventos",
+        },
+      },
+      right: 10,
+    },
   };
 
   return (
-    <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
-      <div style={{ marginBottom: 12 }}>
+    <div style={{ background: "#fff", borderRadius: 8, padding: 0 }}>
+      <div style={{ marginBottom: 0 }}>
         <label style={{ marginRight: 8 }}>Evento:</label>
         <select value={evento} onChange={(e) => setEvento(e.target.value)}>
           {eventos.map((ev) => (
@@ -85,9 +116,6 @@ export default function GraficoTendenciaMensualEventos({
           ))}
         </select>
       </div>
-      <h3 style={{ marginBottom: 8 }}>
-        Tendencia mensual de eventos: {evento}
-      </h3>
       <ReactECharts
         option={option}
         style={{ height: 400 }}

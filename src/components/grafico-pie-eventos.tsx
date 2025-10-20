@@ -80,8 +80,23 @@ export default function GraficoPieEventos({
     },
     legend: {
       orient: "vertical",
-      left: "left",
+      left: 10,
+      textStyle: { fontSize: 14 },
+      icon: "circle",
+      itemWidth: 18,
+      itemHeight: 12,
     },
+    color: [
+      "#5470C6",
+      "#91CC75",
+      "#EE6666",
+      "#FAC858",
+      "#73C0DE",
+      "#3BA272",
+      "#FC8452",
+      "#9A60B4",
+      "#EA7CCC",
+    ],
     series: [
       {
         name: "Eventos",
@@ -96,19 +111,30 @@ export default function GraficoPieEventos({
           },
         },
         label: {
-          formatter: "{b}: {c} ({d}%)",
+          show: true,
+          formatter: "{b}: {d}%",
+          fontSize: 14,
         },
       },
     ],
+    toolbox: {
+      feature: {
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Eventos_por_tipo",
+        },
+      },
+      right: 10,
+    },
   };
 
   return (
     <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
-      <h3 style={{ marginBottom: 8 }}>Distribución de eventos (pie)</h3>
       <ReactECharts
         option={option}
         style={{ height: 400 }}
-        opts={{ renderer: "canvas", devicePixelRatio: 3 }}
+        opts={{ renderer: "canvas", devicePixelRatio: 2 }}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ReactECharts from "echarts-for-react";
 import { useDistribucionAnualProductoQuery } from "@/api";
 
@@ -47,12 +47,16 @@ export default function GraficoDistribucionAnualProducto({
       name: "Año",
       nameLocation: "middle",
       nameGap: 30,
+      axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     yAxis: {
       type: "value",
-      name: "Cantidad",
+      name: "Unidades distribuidas",
       nameLocation: "middle",
-      nameGap: 40,
+      nameGap: 55,
+      axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     series: [
       {
@@ -68,6 +72,16 @@ export default function GraficoDistribucionAnualProducto({
         },
       },
     ],
+    toolbox: {
+      feature: {
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: `Distribucion_anual_${producto}`,
+        },
+      },
+      right: 10,
+    },
   };
 
   return (

@@ -24,24 +24,27 @@ export function MainContent({
     sectionComponents[activeSection as keyof typeof sectionComponents] ||
     ResumenGeneral;
 
-  // Calcular el margen izquierdo basado en el estado del sidebar
-  const marginLeft = isSidebarCollapsed ? "80px" : "280px";
-
   return (
-    <motion.div
-      key={activeSection}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
-      className="flex-1 bg-background transition-all duration-300 ease-in-out"
-      style={{ marginLeft }} // Aplicar margen dinámico
+    <div
+      className="fixed top-0 right-0 bottom-0 transition-all duration-300 ease-in-out"
+      style={{
+        left: isSidebarCollapsed ? "80px" : "280px",
+      }}
     >
-      <div className="p-6">
-        <div className="max-w-7xl mx-auto">
-          <SectionComponent />
-        </div>
+      <div className="h-full overflow-auto bg-background">
+        <motion.div
+          key={activeSection}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
+          className="p-6"
+        >
+          <div className="max-w-7xl mx-auto">
+            <SectionComponent />
+          </div>
+        </motion.div>
       </div>
-    </motion.div>
+    </div>
   );
 }

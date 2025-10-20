@@ -1,6 +1,5 @@
-import React from "react";
 import ReactECharts from "echarts-for-react";
-import { useAsistenciasPorAnioDepartamentoQuery } from "../api/geografica/geograficaApi";
+import { useAsistenciasPorAnioDepartamentoQuery } from "../api";
 
 export default function HeatmapDepartamentoAnio({
   fecha_inicio = "",
@@ -44,8 +43,6 @@ export default function HeatmapDepartamentoAnio({
     new Set(results.map((item: any) => item.anio))
   ).sort();
 
-  // Construir la matriz de valores para el heatmap
-  // ECharts espera datos como [xIndex, yIndex, value]
   const dataMatrix: [number, number, number][] = [];
   results.forEach((item: any) => {
     const deptoIdx = departamentos.indexOf(item.departamento);
@@ -67,9 +64,9 @@ export default function HeatmapDepartamentoAnio({
       },
     },
     grid: {
-      height: "60%",
-      top: 40,
-      left: 100,
+      height: "80%", // Más área para las celdas
+      top: 20,
+      left: "11%",
       right: 40,
       bottom: 40,
     },
@@ -78,13 +75,20 @@ export default function HeatmapDepartamentoAnio({
       data: anios,
       name: "Año",
       splitArea: { show: true },
-      axisLabel: { rotate: 0 },
+      axisLabel: { rotate: 0, fontSize: 12, interval: 0 },
+      nameLocation: "middle",
+      nameGap: 40,
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     yAxis: {
       type: "category",
       data: departamentos,
       name: "Departamento",
       splitArea: { show: true },
+      nameLocation: "middle",
+      nameGap: 90,
+      axisLabel: { fontSize: 12, interval: 0 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     visualMap: {
       min: 0,
@@ -92,7 +96,7 @@ export default function HeatmapDepartamentoAnio({
       calculable: true,
       orient: "horizontal",
       left: "center",
-      bottom: 10,
+      bottom: 25,
       inRange: {
         color: ["#fee2e2", "#fca5a5", "#ef4444", "#991b1b"],
       },
@@ -115,11 +119,25 @@ export default function HeatmapDepartamentoAnio({
         },
       },
     ],
+    toolbox: {
+      feature: {
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Heatmap_Departamento_Anio",
+        },
+      },
+      right: 10,
+    },
   };
 
   return (
-    <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
-      <ReactECharts option={option} style={{ height: 500 }} />
+    <div style={{ background: "#fff", borderRadius: 8, padding: 0 }}>
+      <ReactECharts
+        option={option}
+        style={{ height: 550 }} // Más alto para celdas más grandes
+        opts={{ devicePixelRatio: 2 }}
+      />
     </div>
   );
 }

@@ -116,7 +116,7 @@ export function Sidebar({
                 className="flex-1"
               >
                 <h1 className="text-lg font-bold text-sidebar-foreground leading-tight">
-                  BA - Asistencia Humanitaria
+                  BI - Asistencia Humanitaria
                 </h1>
                 <p className="text-sm text-muted-foreground mt-1">
                   Datos de la SEN Paraguay

@@ -1,5 +1,3 @@
-"use client";
-
 import { motion } from "framer-motion";
 import {
   Card,
@@ -286,7 +284,8 @@ export function AnalisisEventos() {
                 Comparacion de eventos por año
               </CardTitle>
               <CardDescription>
-                Este grafico contiene la cantidad de eventos registrados por año
+                Este grafico contiene la comparativa de eventos registrados por
+                año
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -303,7 +302,7 @@ export function AnalisisEventos() {
                 Tendencia mensual de eventos
               </CardTitle>
               <CardDescription>
-                Grafico que muestra la tendencia mensual de eventos
+                Grafico que muestra la tendencia mensual del evento seleccionado
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -332,7 +331,6 @@ export function AnalisisEventos() {
                 }
               }
               columns={columnasTipoEventos}
-              searchPlaceHolder="Buscar tipo de evento..."
               title="Resumen por Tipo de Eventos"
               subtitle="Datos consolidados de asistencia humanitaria por tipo de evento"
               onViewDetails={VisualizarDetallesGenericos}
@@ -362,7 +360,6 @@ export function AnalisisEventos() {
                 }
               }
               columns={columnasEventosDepartamento}
-              searchPlaceHolder="Buscar departamento..."
               title="Eventos por Departamento"
               subtitle="Distribución de eventos de emergencia por departamento"
               onViewDetails={VisualizarDetallesGenericos}

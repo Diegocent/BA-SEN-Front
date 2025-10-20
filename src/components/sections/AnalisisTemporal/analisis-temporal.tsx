@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../../ui/card";
-import { Column, DataTable } from "../../data-table";
+import { DataTable } from "../../data-table";
 import { useGetAnualQuery, useGetMensualQuery } from "@/api";
 import GraficoMensual from "../../grafico-mensual-ayudas";
 import GraficoAnualAyudas from "../../grafico-anual-ayudas";
@@ -264,12 +264,13 @@ export function AnalisisTemporal() {
           <Card>
             <CardHeader>
               <CardTitle className="text-primary">Análisis por Año</CardTitle>
-              <CardDescription>Distribución anual de eventos</CardDescription>
+              <CardDescription>Distribución anual de productos</CardDescription>
             </CardHeader>
             <CardContent>
               <GraficoAnualAyudas
                 fecha_inicio={dateRange.startDate}
                 fecha_fin={dateRange.endDate}
+                height={320}
               />
             </CardContent>
           </Card>
@@ -303,7 +304,7 @@ export function AnalisisTemporal() {
         <Card>
           <CardHeader>
             <CardTitle className="text-success">
-              Distribución anual de ayuda principal
+              Distribución anual de asistencia principal
             </CardTitle>
             <CardDescription>
               Selecciona el producto para ver su evolución anual
@@ -409,7 +410,6 @@ export function AnalisisTemporal() {
                 }
               }
               columns={columnasAnual}
-              searchPlaceHolder="Buscar año..."
               title="Resumen Anual"
               subtitle="Datos consolidados de asistencia humanitaria por año"
               onViewDetails={VisualizarDetallesGenericos}
@@ -439,7 +439,6 @@ export function AnalisisTemporal() {
                 }
               }
               columns={columnasMensual}
-              searchPlaceHolder="Buscar mes..."
               title="Detalle Mensual"
               subtitle="Datos detallados de asistencia humanitaria por mes"
               onViewDetails={VisualizarDetallesGenericos}

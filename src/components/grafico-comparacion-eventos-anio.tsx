@@ -1,4 +1,3 @@
-import React from "react";
 import ReactECharts from "echarts-for-react";
 import { useOcurrenciasEventoAnualQuery } from "@/api";
 
@@ -46,32 +45,49 @@ export default function GraficoComparacionEventosAnio({
 
   const option = {
     tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
-    legend: { bottom: 10 },
-    grid: { left: 35, right: 20, bottom: 120, top: 10, containLabel: true },
+    legend: {
+      bottom: 0,
+      textStyle: { fontSize: 10 },
+      icon: "roundRect",
+      itemWidth: 18,
+      itemHeight: 12,
+    },
+    grid: { left: 25, right: 20, bottom: 80, top: 40, containLabel: true },
     xAxis: {
       type: "category",
       data: anios,
       name: "Año",
       nameLocation: "middle",
       nameGap: 30,
+      axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     yAxis: {
       type: "value",
       name: "Cantidad de eventos",
       nameLocation: "middle",
-      nameGap: 60,
+      nameGap: 45,
+      axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     series,
+    toolbox: {
+      feature: {
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Comparacion_eventos_anio",
+        },
+      },
+      right: 10,
+    },
   };
 
   return (
-    <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
-      <h3 style={{ marginBottom: 8 }}>
-        Comparación de eventos por año (barras agrupadas)
-      </h3>
+    <div style={{ background: "#fff", borderRadius: 8, padding: 0 }}>
       <ReactECharts
         option={option}
-        style={{ height: 400 }}
+        style={{ height: 380 }}
         opts={{ renderer: "canvas", devicePixelRatio: 2 }}
       />
     </div>

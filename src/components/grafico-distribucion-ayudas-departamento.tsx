@@ -1,4 +1,3 @@
-import React from "react";
 import ReactECharts from "echarts-for-react";
 import { useGetPorDepartamentoQuery } from "../api";
 
@@ -58,26 +57,46 @@ export default function GraficoDistribucionAyudasPorDepartamento({
 
   const option = {
     tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
-    legend: { bottom: 0 },
-    grid: { left: "3%", right: "4%", top: 30, bottom: 60, containLabel: true },
+    legend: { bottom: 0, textStyle: { fontSize: 10 } },
+    grid: { left: "6%", right: "4%", top: 20, bottom: 60, containLabel: true },
     xAxis: {
       type: "category",
       data: departamentos,
       axisLabel: {
         rotate: 30,
         margin: 16,
+        fontSize: 12,
       },
+      name: "Total ayudas",
+      nameLocation: "middle",
+      nameGap: 65,
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
-    yAxis: { type: "value" },
+    yAxis: {
+      type: "value",
+      name: "Unidades Distribuidas",
+      nameLocation: "middle",
+      nameGap: 75,
+      axisLabel: { fontSize: 14 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
+    },
     series,
+    toolbox: {
+      feature: {
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Distribucion_asistencias_por_departamento",
+        },
+      },
+      right: 10,
+      top: -10,
+    },
   };
 
   return (
-    <div style={{ background: "#fff", borderRadius: 8, padding: 16 }}>
-      <h3 style={{ marginBottom: 8 }}>
-        Distribución de ayudas por departamento
-      </h3>
-      <ReactECharts option={option} style={{ height: 400, marginTop: 0 }} />
+    <div style={{ background: "#fff", borderRadius: 8, padding: 0 }}>
+      <ReactECharts option={option} style={{ height: 390, marginTop: 0 }} />
     </div>
   );
 }

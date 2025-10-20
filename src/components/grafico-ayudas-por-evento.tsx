@@ -1,4 +1,3 @@
-import React from "react";
 import ReactECharts from "echarts-for-react";
 import { useAsistenciasPorEventoQuery } from "@/api";
 
@@ -30,22 +29,39 @@ export default function GraficoAyudasPorEvento({
   const eventos = sorted.map((item) => item.evento);
   const ayudas = sorted.map((item) => item.unidades_distribuidas || 0);
 
+  // Calcular el total de ayudas para porcentaje
+  const sumaTotal = ayudas.reduce((acc: number, curr: number) => acc + curr, 0);
+
   const option = {
-    tooltip: { trigger: "axis" },
-    grid: { left: 25, right: 10, bottom: 10, top: 10, containLabel: true },
+    tooltip: {
+      trigger: "axis",
+      formatter: (params: any) => {
+        // params es un array de series
+        if (!params || !params.length) return "";
+        const p = params[0];
+        const value = p.value;
+        const percent =
+          sumaTotal > 0 ? ((value / sumaTotal) * 100).toFixed(1) : "0.0";
+        return `${p.axisValueLabel}<br/>Unidades: <b>${value}</b><br/>Porcentaje: <b>${percent}%</b>`;
+      },
+    },
+    grid: { left: 30, right: 10, bottom: 10, top: 35, containLabel: true },
     xAxis: {
       type: "category",
       data: eventos,
       name: "Evento",
       nameLocation: "middle",
       nameGap: 90,
-      axisLabel: { rotate: 90 },
+      axisLabel: { rotate: 90, fontSize: 11 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     yAxis: {
       type: "value",
-      name: "Total ayudas",
+      name: "Unidades Distribuidas",
       nameLocation: "middle",
-      nameGap: 75,
+      nameGap: 70,
+      axisLabel: { fontSize: 12 },
+      nameTextStyle: { fontWeight: "bold", fontSize: 14 },
     },
     series: [
       {
@@ -58,9 +74,26 @@ export default function GraficoAyudasPorEvento({
           position: "top",
           fontWeight: "bold",
           fontSize: 8,
+          formatter: (params: any) => {
+            const percent =
+              sumaTotal > 0
+                ? ((params.value / sumaTotal) * 100).toFixed(1)
+                : "0.0";
+            return `${percent}%`;
+          },
         },
       },
     ],
+    toolbox: {
+      feature: {
+        saveAsImage: {
+          pixelRatio: 2,
+          title: "Descargar imagen",
+          name: "Asistencias_por_evento",
+        },
+      },
+      right: 10,
+    },
   };
 
   return (
