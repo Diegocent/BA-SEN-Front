@@ -8,6 +8,7 @@ import {
   Mail,
   Github,
   Menu,
+  Globe,
   X,
 } from "lucide-react";
 import { Button } from "../ui/button";
@@ -54,6 +55,13 @@ const navigationItems = [
 
 const contactItems = [
   {
+    id: "website",
+    label: "Website",
+    value: "Yvagacore.com",
+    icon: Globe,
+    href: "https://www.yvagacore.com/",
+  },
+  {
     id: "email",
     label: "Contacto",
     value: "diegovillalbacent1234@gmail.com",
@@ -93,7 +101,7 @@ export function Sidebar({
 
   return (
     <motion.div
-      className="h-screen bg-sidebar border-r border-sidebar-border flex flex-col fixed left-0 top-0 z-50"
+      className="fixed top-0 left-0 z-50 flex flex-col h-screen border-r bg-sidebar border-sidebar-border"
       variants={sidebarVariants}
       animate={isCollapsed ? "collapsed" : "expanded"}
       transition={{ duration: 0.3, ease: "easeInOut" }}
@@ -115,10 +123,10 @@ export function Sidebar({
                 transition={{ duration: 0.2 }}
                 className="flex-1"
               >
-                <h1 className="text-lg font-bold text-sidebar-foreground leading-tight">
+                <h1 className="text-lg font-bold leading-tight text-sidebar-foreground">
                   BI - Asistencia Humanitaria
                 </h1>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="mt-1 text-sm text-muted-foreground">
                   Datos de la SEN Paraguay
                 </p>
               </motion.div>
@@ -129,12 +137,12 @@ export function Sidebar({
             variant="ghost"
             size="icon"
             onClick={handleToggle}
-            className="h-8 w-8 text-sidebar-foreground hover:bg-sidebar-accent"
+            className="w-8 h-8 text-sidebar-foreground hover:bg-sidebar-accent"
           >
             {isCollapsed ? (
-              <Menu className="h-4 w-4" />
+              <Menu className="w-4 h-4" />
             ) : (
-              <X className="h-4 w-4" />
+              <X className="w-4 h-4" />
             )}
           </Button>
         </div>
@@ -240,7 +248,7 @@ export function Sidebar({
                                   <span className="text-xs font-medium truncate">
                                     {item.label}
                                   </span>
-                                  <span className="text-xs text-muted-foreground truncate">
+                                  <span className="text-xs truncate text-muted-foreground">
                                     {item.value}
                                   </span>
                                 </motion.div>
