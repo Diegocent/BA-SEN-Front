@@ -8,6 +8,12 @@ export const geograficaApi = api.injectEndpoints({
         params,
       }),
     }),
+    getCantidadDistritos: builder.query({
+      query: (params) => ({
+        url: "cantidad-distritos-asistidos/",
+        params,
+      }),
+    }),
     getPorDepartamento: builder.query({
       query: (params) => ({
         url: "por-departamento/",
@@ -45,6 +51,7 @@ export const geograficaApi = api.injectEndpoints({
 export const {
   useGetPorUbicacionQuery,
   useGetPorDepartamentoQuery,
+  useGetCantidadDistritosQuery,
   useEventosPorDepartamentoQuery,
   useEventosPorLocalidadQuery,
   useResumenPorDepartamentoQuery,

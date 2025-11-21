@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import {
   Table,
@@ -80,6 +80,7 @@ export function DataTable(props: DataTableProps) {
   } = props;
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [isNavigating, setIsNavigating] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [showFilterPanel, setShowFilterPanel] = useState(false);
@@ -93,8 +94,9 @@ export function DataTable(props: DataTableProps) {
   const rawData = isPaginated ? data?.results ?? [] : data;
   const totalCount = isPaginated ? data.count : rawData.length;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
-  const startItem = (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(currentPage * itemsPerPage, totalCount);
+  const startItem = totalCount === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+  const endItem =
+    totalCount === 0 ? 0 : Math.min(currentPage * itemsPerPage, totalCount);
   const paginatedData = rawData;
 
   const handleViewDetails = (item: any) => {
@@ -102,15 +104,65 @@ export function DataTable(props: DataTableProps) {
     setIsDetailOpen(true);
   };
 
+  const parsePageFromUrl = (u: string | null) => {
+    if (!u) return null;
+    try {
+      // handle relative urls like '?page=2' and absolute urls
+      const urlObj = new URL(u, window.location.origin);
+      const p = urlObj.searchParams.get("page");
+      return p ? Number(p) : null;
+    } catch (e) {
+      // Fallback: crude parse
+      if (u.includes("page=")) {
+        const after = u.split("page=").pop() || "";
+        const pageStr = after.split("&")[0];
+        const n = Number(pageStr);
+        return isNaN(n) ? null : n;
+      }
+      return null;
+    }
+  };
+
+  const clamp = (n: number, min: number, max: number) =>
+    Math.max(min, Math.min(max, n));
+
   const handleServerPageChange = (
     url: string | null,
     direction: "next" | "prev"
   ) => {
-    if (onPageChange && url) {
-      onPageChange(url);
-      setCurrentPage((prev) => (direction === "next" ? prev + 1 : prev - 1));
+    if (!onPageChange || !url) return;
+    if (isNavigating) return; // prevent rapid double navigation
+
+    const parsed = parsePageFromUrl(url);
+    let targetPage: number;
+    if (parsed) {
+      targetPage = parsed;
+    } else {
+      targetPage = direction === "next" ? currentPage + 1 : currentPage - 1;
     }
+
+    const maxPages = Math.max(1, totalPages || 1);
+    targetPage = clamp(targetPage, 1, maxPages);
+
+    // If target equals current, don't call the server unnecessarily
+    if (targetPage === currentPage) return;
+
+    // Lock navigation briefly to avoid multiple quick clicks
+    setIsNavigating(true);
+    setTimeout(() => setIsNavigating(false), 600);
+
+    // Update local page number optimistically (clamped)
+    setCurrentPage(targetPage);
+
+    // Forward the original url to the parent (server expects it)
+    onPageChange(url);
   };
+
+  // Ensure currentPage stays within available range when totalPages changes
+  useEffect(() => {
+    const maxPages = Math.max(1, totalPages || 1);
+    setCurrentPage((prev) => clamp(prev, 1, maxPages));
+  }, [totalPages]);
 
   const handleAddFilter = (colKey: string, value: any) => {
     const col = columns.find((c) => c.key === colKey);
@@ -506,7 +558,7 @@ export function DataTable(props: DataTableProps) {
                   size="small"
                   startIcon={<ChevronLeft />}
                   onClick={() => handleServerPageChange(data.previous, "prev")}
-                  disabled={!data.previous}
+                  disabled={isNavigating || !data.previous || currentPage <= 1}
                   sx={{
                     borderColor: "hsl(var(--border))",
                     color: "hsl(var(--foreground))",
@@ -526,7 +578,9 @@ export function DataTable(props: DataTableProps) {
                   size="small"
                   endIcon={<ChevronRight />}
                   onClick={() => handleServerPageChange(data.next, "next")}
-                  disabled={!data.next}
+                  disabled={
+                    isNavigating || !data.next || currentPage >= totalPages
+                  }
                   sx={{
                     borderColor: "hsl(var(--border))",
                     color: "hsl(var(--foreground))",

@@ -7,7 +7,11 @@ import {
   CardTitle,
 } from "../../ui/card";
 import { DataTable } from "../../data-table";
-import { useGetPorDepartamentoQuery, useGetPorUbicacionQuery } from "@/api";
+import {
+  useGetPorDepartamentoQuery,
+  useGetPorUbicacionQuery,
+  useGetCantidadDistritosQuery,
+} from "@/api";
 import GraficoTotalAyudasPorDepartamento from "../../grafico-total-ayudas-departamento";
 import GraficoTopLocalidades from "../../grafico-top-localidades";
 import GraficoEvolucionAyudasTopDepartamentos from "../../grafico-evolucion-ayudas-top-departamentos";
@@ -33,13 +37,23 @@ export function AnalisisGeografico() {
   const [filtersDepto, setFiltersDepto] = useState<Record<string, any>>({});
   const [pageUrlDepto, setPageUrlDepto] = useState<string | null>(null);
   const { page: pageDepto, ...filtersDeptoWithoutPage } = filtersDepto;
-  const pageParamDepto = pageUrlDepto
-    ? {
-        page: pageUrlDepto.includes("page=")
-          ? pageUrlDepto.split("page=").pop()
-          : "1",
+  const parsePageFromUrl = (u: string | null) => {
+    if (!u) return { page: "1" };
+    try {
+      // Use URL parsing to safely extract the 'page' param
+      const urlObj = new URL(u, window.location.origin);
+      const p = urlObj.searchParams.get("page") || "1";
+      return { page: p };
+    } catch (e) {
+      // Fallback: keep previous simple parse but strip other params
+      if (u.includes("page=")) {
+        const after = u.split("page=").pop() || "1";
+        return { page: after.split("&")[0] };
       }
-    : { page: "1" };
+      return { page: "1" };
+    }
+  };
+  const pageParamDepto = parsePageFromUrl(pageUrlDepto);
   const dateParams =
     dateRange.startDate && dateRange.endDate
       ? { fecha_desde: dateRange.startDate, fecha_hasta: dateRange.endDate }
@@ -56,13 +70,7 @@ export function AnalisisGeografico() {
   );
   const [pageUrlDistrito, setPageUrlDistrito] = useState<string | null>(null);
   const { page: pageDistrito, ...filtersDistritoWithoutPage } = filtersDistrito;
-  const pageParamDistrito = pageUrlDistrito
-    ? {
-        page: pageUrlDistrito.includes("page=")
-          ? pageUrlDistrito.split("page=").pop()
-          : "1",
-      }
-    : { page: "1" };
+  const pageParamDistrito = parsePageFromUrl(pageUrlDistrito);
   const queryParamsDistrito = {
     ...filtersDistritoWithoutPage,
     ...pageParamDistrito,
@@ -130,6 +138,10 @@ export function AnalisisGeografico() {
     isLoading: boolean;
   };
   const [topDepartamento, setTopDepartamento] = useState<string>("");
+  const { data: cantidadDistritosData } = useGetCantidadDistritosQuery(
+    // params: use the same date params used for lists
+    dateParams
+  );
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -289,7 +301,9 @@ export function AnalisisGeografico() {
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold text-primary-dark">
-                {dataDistrito?.count || 0}
+                {cantidadDistritosData?.distritos_asistidos ??
+                  dataDistrito?.count ??
+                  0}
               </p>
               <p className="text-sm text-muted-foreground">
                 Distritos con asistencia
