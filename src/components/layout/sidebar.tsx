@@ -147,6 +147,7 @@ export function Sidebar({
           </Button>
         </div>
       </div>
+      {/* (Facultad link moved to footer) */}
 
       {/* Navigation */}
       <div className="flex-1 p-4">
@@ -274,6 +275,49 @@ export function Sidebar({
             );
           })}
         </div>
+          {/* Facultad Politécnica - enlace inferior con logo */}
+          <div className="pt-3">
+            <Button
+              variant="ghost"
+              className={cn(
+                "w-full justify-start h-10 text-left text-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent",
+                isCollapsed && "justify-center px-0"
+              )}
+              asChild
+            >
+              <a href="https://www.pol.una.py/" target="_blank" rel="noopener noreferrer">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <motion.div
+                        variants={contentVariants}
+                        initial="collapsed"
+                        animate="expanded"
+                        exit="collapsed"
+                        transition={{ duration: 0.2 }}
+                        className="flex items-center min-w-0"
+                      >
+                        <img
+                          src="/fpuna.png"
+                          alt="FPUNA"
+                          className={cn("h-8", isCollapsed ? "w-8" : "w-auto mr-3")}
+                        />
+                        {!isCollapsed && (
+                          <span className="text-sm font-medium">Facultad Politécnica - UNA</span>
+                        )}
+                      </motion.div>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <div className="flex flex-col max-w-xs">
+                        <span className="font-medium">Facultad Politécnica - UNA</span>
+                        <span className="text-muted-foreground">https://www.pol.una.py/</span>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </a>
+            </Button>
+          </div>
       </div>
     </motion.div>
   );
