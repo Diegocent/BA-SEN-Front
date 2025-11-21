@@ -69,11 +69,18 @@ const contactItems = [
     href: "mailto:diegovillalbacent1234@gmail.com",
   },
   {
-    id: "github",
-    label: "Repositorio GitHub",
-    value: "github.com/Diegocent/dashboardTesisDjango",
+    id: "github_front",
+    label: "Repositorio GitHub - Front",
+    value: "github.com/Diegocent/BI-SEN-Front",
     icon: Github,
-    href: "https://github.com/Diegocent/dashboardTesisDjango",
+    href: "https://github.com/Diegocent/BI-SEN-Front",
+  },
+  {
+    id: "github_back",
+    label: "Repositorio GitHub - Back",
+    value: "github.com/Diegocent/BI-SEN-Back",
+    icon: Github,
+    href: "https://github.com/Diegocent/BI-SEN-Back",
   },
 ];
 
